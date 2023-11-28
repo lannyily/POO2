@@ -74,9 +74,7 @@ class ClienteThread(threading.Thread):
                 print(f'Operação não reconhecida: {operacao}')
         except Exception as e:
             print(f"Erro durante a execução da thread: {e}")
-        finally:
-            self.csocket.close()
-
+        
     def verificar_usuario_senha(self, email, senha):
         try:
             with conexao.cursor() as cursor:

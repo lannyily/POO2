@@ -17,8 +17,6 @@ from tela_perfil import Ui_tela_perfil
 from tela_casa_polvora import Ui_tela_casa_polvora
 from tela_casa_pol_reserva import Ui_tela_casa_pol_reserva
 
-print('oi')
-
 class Ui_Main(QtWidgets.QWidget):
 
     def setupUi(self, Main):
