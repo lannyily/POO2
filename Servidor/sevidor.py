@@ -24,8 +24,14 @@ class ClienteThread(threading.Thread):
             dados = ';'.join(dados)
             print('Operação:', operacao)
             print('Dados:', dados)
+            
+            if operacao == 'sair':
+                print('Cliente solicitou sair. Fechando a conexão...')
+                self.csocket.send("Desconectado pelo servidor".encode())
+                self.csocket.close()
+                return
 
-            if operacao == 'login':
+            elif operacao == 'login':
                 email, senha = dados.split(';')
                 print('email:', email)
                 print('senha:', senha)

@@ -95,9 +95,17 @@ class Main(QMainWindow, Ui_Main):
         self.email = ''
 
     def sair_do_sistema(self):
+        print("1 saindo do sistema....")
+        msg = f'sair;'
+        self.client_socket.send(msg.encode())
+        print('2 saindo do sistema....')
+        
+        self.addr = (self.ip, self.port)
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client_socket.connect(self.addr)
+        
         self.abrir_tela_login()
-        self.cliente_socket.close()
-        print('saindo do sistema....')
+        print('3 saindo do sistema....')
     
     def login(self):
         email = self.tela_login.lineEdit_email.text()
