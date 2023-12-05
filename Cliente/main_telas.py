@@ -97,6 +97,7 @@ class Main(QMainWindow, Ui_Main):
     def sair_do_sistema(self):
         print("1 saindo do sistema....")
         msg = f'sair;'
+        print('aqui')
         self.client_socket.send(msg.encode())
         print('2 saindo do sistema....')
         

@@ -1,14 +1,10 @@
 import threading
 import socket
 import mysql.connector as mysql
-# conexao com mysql
+
 conexao = mysql.connect(
     host='localhost', database='turismo', user='root', passwd='amor2004')
 cursor = conexao.cursor()
-
-# bloqueio
-lock = threading.Lock()
-
 
 class ClienteThread(threading.Thread):
     def __init__(self, clientAddress, clientesocket):
@@ -29,6 +25,7 @@ class ClienteThread(threading.Thread):
                 print('Cliente solicitou sair. Fechando a conexão...')
                 self.csocket.send("Desconectado pelo servidor".encode())
                 self.csocket.close()
+                print('aqui1')
                 return
 
             elif operacao == 'login':
@@ -36,37 +33,26 @@ class ClienteThread(threading.Thread):
                 print('email:', email)
                 print('senha:', senha)
 
-                with lock:
-                    if self.verificar_usuario_senha(email, senha):
-                        self.csocket.send("Login bem-sucedido!".encode())
-                        print(f'{email} se conectou!')
+                if self.verificar_usuario_senha(email, senha):
+                    self.csocket.send("Login bem-sucedido!".encode())
+                    print(f'{email} se conectou!')
+                        
+                    data = self.csocket.recv(1024).decode()
+                    operacao, *dados = data.split(';')
+                    dados = ';'.join(dados)
+                    print('Operação:', operacao)
+                    print('Dados:', dados)
 
-                        while True:
-                            try:
-                                data = self.csocket.recv(1024).decode()
-                                if not data:
-                                    print(f'Conexão encerrada por {self.addr}')
-                                    break
-
-                                operacao, *dados = data.split(';')
-                                dados = ';'.join(dados)
-                                print('Operação:', operacao)
-                                print('Dados:', dados)
-
-                                if operacao == 'busca':
-                                    email_busca = dados.split(';')[0]
-                                    print(email_busca)
-
-                                    print("Realizando busca...")
-                                    resultado = self.busca(email_busca)
-                                else:
-                                    print('Erro')
-                            except ConnectionResetError:
-                                print(f'Conexão encerrada por {self.addr}')
-                                break
+                    if operacao == 'busca':
+                        email_busca = dados.split(';')[0]
+                        print(email_busca)
+                        print("Realizando busca...")
+                        resultado = self.busca(email_busca)
                     else:
-                        self.csocket.send(
-                            "Usuário ou senha incorretos.".encode())
+                        print('Erro')
+                else:
+                    self.csocket.send(
+                        "Usuário ou senha incorretos.".encode())
             elif operacao == 'cadastro':
                 nome, cpf, dataN, email, senha = dados.split(';')
 
