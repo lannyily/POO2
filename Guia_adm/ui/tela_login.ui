@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>798</width>
+    <width>452</width>
     <height>598</height>
    </rect>
   </property>
@@ -14,17 +14,17 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(240, 240, 240);
+   <string notr="true">background-color: rgb(223, 223, 223);
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>0</y>
-      <width>331</width>
-      <height>191</height>
+      <x>60</x>
+      <y>30</y>
+      <width>311</width>
+      <height>171</height>
      </rect>
     </property>
     <property name="text">
@@ -40,8 +40,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>160</y>
+      <x>280</x>
+      <y>180</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -60,14 +60,14 @@
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>200</y>
+      <x>50</x>
+      <y>210</y>
       <width>361</width>
       <height>281</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(245,222,179);</string>
+     <string notr="true">background-color: rgb(111, 125, 255);</string>
     </property>
     <widget class="QWidget" name="widget_2" native="true">
      <property name="geometry">
@@ -79,7 +79,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(249, 249, 249);</string>
+      <string notr="true">background-color: rgb(231, 241, 255);</string>
      </property>
      <widget class="QPushButton" name="pushButton">
       <property name="geometry">
@@ -157,6 +157,9 @@ color: rgb(255, 255, 255);</string>
        </item>
        <item>
         <widget class="QLineEdit" name="lineEdit_senha">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="echoMode">
           <enum>QLineEdit::Password</enum>
          </property>
@@ -194,6 +197,9 @@ color: rgb(255, 255, 255);</string>
        <bold>true</bold>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(255, 255, 255);</string>
+     </property>
      <property name="text">
       <string>Entrar no Sistema</string>
      </property>
@@ -208,15 +214,15 @@ color: rgb(255, 255, 255);</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(249, 249, 249);</string>
+      <string notr="true">background-color: rgb(231, 241, 255);</string>
      </property>
      <widget class="QPushButton" name="pushButton_entar_adm">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>20</y>
-        <width>291</width>
-        <height>28</height>
+        <x>20</x>
+        <y>10</y>
+        <width>301</width>
+        <height>41</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -226,6 +232,7 @@ border: 1px solid black;
 color: rgb(255, 255, 255);
 	background-color: rgb(135,206,235);
 border-radius: 9px;
+ font-size: 16px;
 }
 
 QPushButton:hover{
@@ -253,14 +260,33 @@ border-radius: 9px;
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>180</x>
       <y>500</y>
       <width>93</width>
-      <height>28</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);</string>
+     <string notr="true">QPushButton {
+           
+	
+	
+	background-color: rgb(238, 255, 254);
+           border: none;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 15px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+          
+	
+	background-color: rgb(255, 255, 255);
+        }</string>
     </property>
     <property name="text">
      <string>Sair</string>

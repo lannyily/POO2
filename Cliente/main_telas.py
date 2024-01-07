@@ -18,8 +18,31 @@ from tela_casa_polvora import Ui_tela_casa_polvora
 from tela_casa_pol_reserva import Ui_tela_casa_pol_reserva
 
 class Ui_Main(QtWidgets.QWidget):
+    """
+    A class é usada para abrir as telas
+    
+    ...
 
+    Methods
+    -------
+    setupUi(Main)
+        Configura a Janela Principal
+        Configura o QStackedLayout
+        Cria janelas secundárias
+        Configura as telas de interface
+        Adiciona telas ao QStackedLayout
+    """
     def setupUi(self, Main):
+        """
+        Parameters
+        ----------
+        Main : None
+        
+        
+        
+        """
+        
+        
         Main.setObjectName('Main')
         Main.resize(640, 480)
 
@@ -58,11 +81,75 @@ class Ui_Main(QtWidgets.QWidget):
         self.QtStack.addWidget(self.stack5)
         
 class Main(QMainWindow, Ui_Main):
+    """
+    A classe é usada para tudas as funcionalidades do sistema, desde os botões, calendarias, selação das escolhas, as funções que executam as funcionalidades e a conexão com o banco de dados
+    
+    ...
+    
+    Args
+    ----
+        QMainWindow (None): _description_
+        Ui_Main (None): _description_
+        
+    Attibutes
+    ---------
+    parent : None
+        ...
+    
+    Methods
+    -------
+    sair_do_sistema()
+        Quando o usuário deseja sair do sistema, ele sai e da inicio a uma nova conexão
+    
+    login()
+        Ele recebe o email e senha do usúario para efetuar o login, se tiver na base de dados
+        ele entra na pagina inicial da conta da pessoa, se não, ele fala que login e senha estão 
+        incorretos.
+    
+    cadastro()
+        Recebe todos os dados do novo usuário para ser registrado no banco de dados, se ele não
+        preecher todos os campos o código dara um aviso.
+    
+    calendario()
+        Para no sistema a data que está no momento
+    
+    sair()
+        Sair do sistema na tela de login
+    
+    cancelar_cad()
+        É para cancelar o cadastro durante o processo
+    
+    mostrar_mensagem_erro(mensagem)
+        Responsavel por colocar todas as mensagens de erro na caixa de erro
+    
+    abrir_tela_login()
+        Abre a tela de login
+    
+    abrir_tela_inicial()
+        Abre a tela inicial
+    
+    abrir_tela_casa_polvora()
+        Abre a tela casa da polvora
+    
+    abrir_tela_casa_polvora_reserva()
+        Abre a tela casa da polvora para fazer a reserva
+        
+    abrir_tela_perfil()
+        Abre a tela de perfil e mostrar o usuário que esta logado no momento
+        
+        
+        
+    """
     def __init__(self, parent=None):
+        """_summary_
+
+        Args:
+            parent (_type_, optional): _description_. Defaults to None.
+        """
         super(Main, self).__init__(parent)
         self.setupUi(self)
         
-        self.ip = '192.168.1.18'
+        self.ip = '192.168.18.105'
         self.port = 1600
         self.addr = (self.ip, self.port)
         
@@ -96,51 +183,66 @@ class Main(QMainWindow, Ui_Main):
 
     def sair_do_sistema(self):
         print("1 saindo do sistema....")
-        msg = f'sair;'
+        sair = 'sair'
+        msg = f'sair;{sair}'
         print('aqui')
-        self.client_socket.send(msg.encode())
+        self.cliente_socket.send(msg.encode())
         print('2 saindo do sistema....')
-        
-        self.addr = (self.ip, self.port)
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect(self.addr)
-        
-        self.abrir_tela_login()
+
+        resposta = self.cliente_socket.recv(1024).decode()
         print('3 saindo do sistema....')
+     
+        if resposta.lower() == 'Desconectado pelo servidor':
+            self.cliente_socket.close()  # Feche o socket ao desconectar
+            self.cliente_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.cliente_socket.connect(self.addr)
+            self.abrir_tela_login()
+            print('3 saindo do sistema....')
     
+        print('Foi')
+
     def login(self):
-        email = self.tela_login.lineEdit_email.text()
-        senha = self.tela_login.lineEdit_senha.text()
+        while True:
+            email = self.tela_login.lineEdit_email.text()
+            senha = self.tela_login.lineEdit_senha.text()
 
-        if email != '' and senha != '':
-            try: 
-                mensagem = f"login;{email};{senha}"
-                
-                self.cliente_socket.send(mensagem.encode())
-                print('1 - Mensagem enviada:', mensagem)
+            if email and senha:
+                try:
+                    mensagem = f"login;{email};{senha}"
 
-                resposta = self.cliente_socket.recv(1024).decode()
-                print('2 - Resposta recebida:', resposta)
+                    self.cliente_socket.send(mensagem.encode('utf-8'))
+                    print('1 - Mensagem enviada:', mensagem)
 
-                if resposta.lower() == 'login bem-sucedido!':
-                    self.email = self.tela_login.lineEdit_email.text()
-                    self.tela_login.lineEdit_email.setText('')
-                    self.tela_login.lineEdit_senha.setText('')
-            
-                    self.abrir_tela_inicial()
-                elif resposta.lower() == 'usuário ou senha incorretos.':
-                    self.mostrar_mensagem_erro("Usuário ou senha incorretos")
-                else:
-                    self.mostrar_mensagem_erro("Erro desconhecido")
-            except ConnectionResetError:
-                print("Conexão com o servidor foi perdida.")
-                self.mostrar_mensagem_erro("Conexão com o servidor foi perdida.")
-                self.sair_do_sistema()
-            except Exception as e:
-                print(f"Erro ao conectar com o servidor: {e}")
-                self.mostrar_mensagem_erro("Erro ao conectar com o servidor. Verifique sua conexão.")
-        else:
-            self.mostrar_mensagem_erro("Preencha todos os campos")
+                    resposta = self.cliente_socket.recv(1024).decode('utf-8')
+
+                    print('2 - Resposta recebida:', resposta)
+
+                    if resposta.lower() == 'login bem-sucedido!':
+                        self.email = email
+                        self.tela_login.lineEdit_email.setText('')
+                        self.tela_login.lineEdit_senha.setText('')
+                        self.abrir_tela_inicial()
+                        break 
+                    elif resposta.lower() == 'usuário ou senha incorretos.':
+                        self.mostrar_mensagem_erro("Usuário ou senha incorretos. Tente novamente.")
+                        self.tela_login.lineEdit_email.setText('')  
+                        self.tela_login.lineEdit_senha.setText('')  
+                    else:
+                        self.mostrar_mensagem_erro("Erro desconhecido")
+                except ConnectionResetError:
+                    print("Conexão com o servidor foi perdida.")
+                    self.mostrar_mensagem_erro("Conexão com o servidor foi perdida.")
+                    self.sair_do_sistema()
+                except Exception as e:
+                    print(f"Erro ao conectar com o servidor: {e}")
+                    self.mostrar_mensagem_erro("Erro ao conectar com o servidor. Verifique sua conexão.")
+            else:
+                if not self.tela_login.lineEdit_email.text():
+                    self.mostrar_mensagem_erro("Campo de e-mail vazio. Preencha todos os campos.")
+                elif not self.tela_login.lineEdit_senha.text():
+                    self.mostrar_mensagem_erro("Campo de senha vazio. Preencha todos os campos.")
+                break  
+
 
     def cadastro(self):
         nome = self.tela_cadastro.lineEdit_nome.text()

@@ -29,15 +29,11 @@ class ClienteThread(threading.Thread):
                 return
 
             elif operacao == 'login':
-                email, senha = dados.split(';')
-                print('email:', email)
-                print('senha:', senha)
-
-                if self.verificar_usuario_senha(email, senha):
-                    self.csocket.send("Login bem-sucedido!".encode())
+                if self.verificar_usuario_senha(dados):
+                    self.csocket.send("Login bem-sucedido!".encode('utf-8'))
                     print(f'{email} se conectou!')
                         
-                    data = self.csocket.recv(1024).decode()
+                    data = self.csocket.recv(1024).decode('utf-8')
                     operacao, *dados = data.split(';')
                     dados = ';'.join(dados)
                     print('Operação:', operacao)
@@ -51,38 +47,47 @@ class ClienteThread(threading.Thread):
                     else:
                         print('Erro')
                 else:
-                    self.csocket.send(
-                        "Usuário ou senha incorretos.".encode())
+                    self.csocket.send("Usuário ou senha incorretos.".encode())
             elif operacao == 'cadastro':
                 nome, cpf, dataN, email, senha = dados.split(';')
 
-                with lock:
-                    if self.cadastrar_novo_usuario(nome, cpf, dataN, email, senha):
-                        self.csocket.send("Conta criada com sucesso!".encode())
-                        print(f'{nome} tem uma conta no sistema!')
-                    else:
-                        self.csocket.send("Erro na criação da conta".encode())
+                if self.cadastrar_novo_usuario(nome, cpf, dataN, email, senha):
+                    self.csocket.send("Conta criada com sucesso!".encode())
+                    print(f'{nome} tem uma conta no sistema!')
+                else:
+                    self.csocket.send("Erro na criação da conta".encode())
             else:
                 print(f'Operação não reconhecida: {operacao}')
         except Exception as e:
             print(f"Erro durante a execução da thread: {e}")
         
-    def verificar_usuario_senha(self, email, senha):
-        try:
-            with conexao.cursor() as cursor:
-                cursor.execute(
-                    "SELECT * FROM contas WHERE email = %s AND senha = %s", (email, senha))
-                resultado = cursor.fetchone()
-
-            if resultado:
-                print(resultado)
-                return resultado
-            else:
-                print("Usuário/senha não encontrados.")
-                return None
-        except mysql.Error as err:
-            print(f"Erro ao acessar o banco de dados: {err}")
-            return False
+    def verificar_usuario_senha(self, dados):
+        while True:
+            email, senha = dados.split(';')
+            print('email:', email)
+            print('senha:', senha)
+            print("1")
+     
+            try:
+                print('2')
+                with conexao.cursor() as cursor:
+                    print("3")
+                    cursor.execute(
+                        "SELECT * FROM contas WHERE email = %s AND senha = %s", (email, senha))
+                    print('4')                   
+                    resultado = cursor.fetchone()
+                    print('5')
+                    print(resultado)
+                if resultado:
+                    print(resultado)
+                    return True       
+                else:
+                    return False
+            except mysql.Error as err:
+                print(f"Erro ao acessar o banco de dados: {err}")
+                erro_str = f"Erro ao acessar o banco de dados: {str(err)}"
+                self.csocket.send(erro_str.encode('utf-8'))
+                return False
 
     def cadastrar_novo_usuario(self, nome, cpf, dataN, email, senha):
         try:
