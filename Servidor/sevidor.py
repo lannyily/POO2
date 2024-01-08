@@ -25,7 +25,7 @@ class ClienteThread(threading.Thread):
 
                 if operacao == 'sair':
                     print('Cliente solicitou sair. Fechando a conexão...')
-                    self.csocket.send("Desconectado pelo servidor".encode())
+                    self.csocket.send("Desconectado pelo servidor".encode('utf-8'))
                     self.csocket.close()
                     break
 
@@ -40,7 +40,13 @@ class ClienteThread(threading.Thread):
                             dados_operacao = ';'.join(dados_operacao)
                             print('Operação:', operacao)
                             print('Dados:', dados_operacao)
-
+                            
+                            if operacao == 'sair':
+                                print('Cliente solicitou sair. Fechando a conexão...')
+                                self.csocket.send("Desconectado pelo servidor".encode('utf-8'))
+                                self.csocket.close()
+                                break
+                            
                             if operacao == 'busca':
                                 email_busca = dados_operacao.split(';')[0]
                                 print(email_busca)
@@ -155,32 +161,26 @@ class ClienteThread(threading.Thread):
         return bool(re.match(padrao, email))
 
     def validar_cpf(self, cpf):
-        # Remover caracteres não numéricos
         cpf_numerico = re.sub(r'\D', '', cpf)
         
-        # Verificar se o CPF tem 11 dígitos
         if len(cpf_numerico) != 11:
             return False
 
-        # Calcular o primeiro dígito verificador
         soma = 0
         for i in range(9):
             soma += int(cpf_numerico[i]) * (10 - i)
         resto = soma % 11
         digito1 = 11 - resto if resto >= 2 else 0
 
-        # Verificar o primeiro dígito verificador
         if digito1 != int(cpf_numerico[9]):
             return False
 
-        # Calcular o segundo dígito verificador
         soma = 0
         for i in range(10):
             soma += int(cpf_numerico[i]) * (11 - i)
         resto = soma % 11
         digito2 = 11 - resto if resto >= 2 else 0
 
-        # Verificar o segundo dígito verificador
         if digito2 != int(cpf_numerico[10]):
             return False
 

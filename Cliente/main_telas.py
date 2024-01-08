@@ -183,24 +183,37 @@ class Main(QMainWindow, Ui_Main):
 
     def sair_do_sistema(self):
         print("1 saindo do sistema....")
-        sair = 'sair'
-        msg = f'sair;{sair}'
-        print('aqui')
+        msg = f'sair'
         self.cliente_socket.send(msg.encode())
         print('2 saindo do sistema....')
-
         resposta = self.cliente_socket.recv(1024).decode()
+        print(f'Resposta recebida: {resposta}')
         print('3 saindo do sistema....')
      
-        if resposta.lower() == 'Desconectado pelo servidor':
-            self.cliente_socket.close()  # Feche o socket ao desconectar
-            self.cliente_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.cliente_socket.connect(self.addr)
-            self.abrir_tela_login()
+        if resposta.lower() == 'desconectado pelo servidor':
             print('3 saindo do sistema....')
-    
+            self.cliente_socket.close() 
+            print('4 saindo do sistema....')
+            self.cliente_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            print('5 saindo do sistema....')
+            self.cliente_socket.connect(self.addr)
+            print('6 saindo do sistema....')
+            self.abrir_tela_login()
+            print('7 saindo do sistema....')
+            
         print('Foi')
 
+    def sair(self):
+        msg = 'sair'
+        self.cliente_socket.send(msg.encode())
+        
+        resposta = self.cliente_socket.recv(1024).decode()
+        if resposta.lower() == 'Desconectado pelo servidor':
+            self.cliente_socket.close()     
+        self.close()
+        print('Saiu do sistema')
+        
+        
     def login(self):
         while True:
             email = self.tela_login.lineEdit_email.text()
@@ -222,11 +235,11 @@ class Main(QMainWindow, Ui_Main):
                         self.tela_login.lineEdit_email.setText('')
                         self.tela_login.lineEdit_senha.setText('')
                         self.abrir_tela_inicial()
-                        break  # Saia do loop se o login for bem-sucedido
+                        break  
                     elif resposta.lower() == 'usuário ou senha incorretos.':
                         self.mostrar_mensagem_erro("Usuário ou senha incorretos. Tente novamente.")
-                        self.tela_login.lineEdit_email.setText('')  # Limpar o campo de e-mail
-                        self.tela_login.lineEdit_senha.setText('')  # Limpar o campo de senha
+                        self.tela_login.lineEdit_email.setText('')  
+                        self.tela_login.lineEdit_senha.setText('')  
                     else:
                         self.mostrar_mensagem_erro("Erro desconhecido")
                 except ConnectionResetError:
@@ -241,7 +254,7 @@ class Main(QMainWindow, Ui_Main):
                     self.mostrar_mensagem_erro("Campo de e-mail vazio. Preencha todos os campos.")
                 elif not senha:
                     self.mostrar_mensagem_erro("Campo de senha vazio. Preencha todos os campos.")
-                break  # Saia do loop se os campos não estiverem preenchidos
+                break  
 
 
     def cadastro(self):
@@ -299,10 +312,6 @@ class Main(QMainWindow, Ui_Main):
         print('Data do calendario aterada')
         data_selecionada = self.tela_casa_polvora_reserva.calendarWidget.selectedDate().toPyDate()
         print("Data selecionada: ", data_selecionada)
-
-    def sair(self):
-        QMessageBox.information(None, 'Exit', 'Saindo da Aplicação...')
-        sys.exit()
         
     def cancelar_cad(self):
         QMessageBox.information(None, '...', 'Cadastro cancelado!')
