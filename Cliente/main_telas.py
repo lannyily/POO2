@@ -155,6 +155,10 @@ class Main(QMainWindow, Ui_Main):
         
         self.cliente_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.cliente_socket.connect(self.addr)
+        
+        tipo_usuario = 'cliente'
+        self.cliente_socket.send(tipo_usuario.encode())
+        print(f'Tipo de usuário enviado para o sevidor: {tipo_usuario}')
 
         self.tela_login.commandLinkButton_naoTemConta.clicked.connect(self.abrir_tela_cadastro)
         self.tela_login.pushButton_fechar.clicked.connect(self.sair)
@@ -366,6 +370,9 @@ class Main(QMainWindow, Ui_Main):
             print(f"Erro ao abrir a tela de perfil: {e}")
 
 if __name__ == '__main__':
+    
     app = QApplication(sys.argv)
     show_main = Main()
     sys.exit(app.exec_())
+    
+    

@@ -12,9 +12,27 @@ class ClienteThread(threading.Thread):
         threading.Thread.__init__(self)
         self.csocket = clientesocket
         self.addr = clientAddress
+        self.tipo_usuario = ''
         print('Nova conexão:', clientAddress)
-
+        
     def run(self):
+        data = self.csocket.recv(1024).decode()
+        tipo_usuario = data.split(';')[0]
+        print('Tipo de usuário:', tipo_usuario)
+        
+        self.tipo_usuario = tipo_usuario
+        
+        if tipo_usuario == 'cliente':
+            self.run_cliente()
+        elif tipo_usuario == 'admin':
+            pass
+        elif tipo_usuario == 'funcionario':
+            pass
+        else:
+            print(f'Tipo de usuário não reconhecido: {tipo_usuario}')
+            self.csocket.close()
+
+    def run_cliente(self):
         try:
             while True:
                 data = self.csocket.recv(1024).decode()
