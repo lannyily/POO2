@@ -222,11 +222,11 @@ class Main(QMainWindow, Ui_Main):
                         self.tela_login.lineEdit_email.setText('')
                         self.tela_login.lineEdit_senha.setText('')
                         self.abrir_tela_inicial()
-                        break 
+                        break  # Saia do loop se o login for bem-sucedido
                     elif resposta.lower() == 'usuário ou senha incorretos.':
                         self.mostrar_mensagem_erro("Usuário ou senha incorretos. Tente novamente.")
-                        self.tela_login.lineEdit_email.setText('')  
-                        self.tela_login.lineEdit_senha.setText('')  
+                        self.tela_login.lineEdit_email.setText('')  # Limpar o campo de e-mail
+                        self.tela_login.lineEdit_senha.setText('')  # Limpar o campo de senha
                     else:
                         self.mostrar_mensagem_erro("Erro desconhecido")
                 except ConnectionResetError:
@@ -237,14 +237,15 @@ class Main(QMainWindow, Ui_Main):
                     print(f"Erro ao conectar com o servidor: {e}")
                     self.mostrar_mensagem_erro("Erro ao conectar com o servidor. Verifique sua conexão.")
             else:
-                if not self.tela_login.lineEdit_email.text():
+                if not email:
                     self.mostrar_mensagem_erro("Campo de e-mail vazio. Preencha todos os campos.")
-                elif not self.tela_login.lineEdit_senha.text():
+                elif not senha:
                     self.mostrar_mensagem_erro("Campo de senha vazio. Preencha todos os campos.")
-                break  
+                break  # Saia do loop se os campos não estiverem preenchidos
 
 
     def cadastro(self):
+        print('Cadastro')
         nome = self.tela_cadastro.lineEdit_nome.text()
         cpf = self.tela_cadastro.lineEdit_cpf.text()
         dataN = self.tela_cadastro.dateEdit_nasci.date().toString("dd-MM-yyyy")
@@ -254,12 +255,13 @@ class Main(QMainWindow, Ui_Main):
         if not nome == '' or cpf == '' or email == '' or senha == '':
             try:
                 msg = f'cadastro;{nome};{cpf};{dataN};{email};{senha}'
-                
+                print(f'Mensagem enviada: {msg}')
                 self.cliente_socket.send(msg.encode())
-                resp = self.cliente_socket.recv(1024).decode()
-                print(resp)
                 
-                if resp.lower() == "conta criada com sucesso!":
+                resp = self.cliente_socket.recv(1024).decode()
+                print(f'Resposta recebida: {resp}')
+                
+                if resp.lower() == "dados inseridos com sucesso!":
                     self.tela_cadastro.lineEdit_nome.setText("")
                     self.tela_cadastro.lineEdit_cpf.setText("")
                     self.tela_cadastro.dateEdit_nasci.setDate(QDate.currentDate())
@@ -269,8 +271,25 @@ class Main(QMainWindow, Ui_Main):
                     print("Dados inseridos com sucesso!")
                     QMessageBox.information(None, '...', 'Novo usuário inserido com sucesso!')
                     self.abrir_tela_login()
+                    
+                elif resp.lower() == "cpf ja cadastrado. nao e possivel criar a conta":
+                    self.mostrar_mensagem_erro("CPF já cadastrado. Tente novamente.")
+                    self.tela_cadastro.lineEdit_cpf.setText("")
+                elif resp.lower() == "email ja cadastrado. nao e possivel criar a conta":
+                    self.mostrar_mensagem_erro("E-mail já cadastrado. Tente novamente.")
+                    self.tela_cadastro.lineEdit_email.setText("") 
+                elif resp.lower() == "email invalido":
+                    self.mostrar_mensagem_erro("E-mail inválido. Digite um e-mail valido.")
+                    self.tela_cadastro.lineEdit_email.setText("")
+                elif resp.lower() == "senha muito curta":
+                    self.mostrar_mensagem_erro("Senha muito curta. Digite uma senha com no mínimo 8 caracteres.")
+                    self.tela_cadastro.lineEdit_senha.setText("")
+                elif resp.lower() == "cpf invalido":
+                    self.mostrar_mensagem_erro("CPF inválido. Digite um CPF válido.")
+                    self.tela_cadastro.lineEdit_cpf.setText("")
                 else:
                     self.mostrar_mensagem_erro("Erro na criação de conta")
+                    
             except Exception as e:
                 print(f"Erro: {e}")
         else:
@@ -295,9 +314,16 @@ class Main(QMainWindow, Ui_Main):
     def abrir_tela_login(self):
         self.QtStack.setCurrentIndex(0)
         self.email = ''
+        self.tela_login.lineEdit_email.setText("")
+        self.tela_login.lineEdit_senha.setText("")
         
     def abrir_tela_cadastro(self):
         self.QtStack.setCurrentIndex(1)
+        self.tela_cadastro.lineEdit_nome.setText("")
+        self.tela_cadastro.lineEdit_cpf.setText("")
+        self.tela_cadastro.dateEdit_nasci.setDate(QDate.currentDate())
+        self.tela_cadastro.lineEdit_email.setText("")
+        self.tela_cadastro.lineEdit_senha.setText("")
         
     def abrir_tela_inicial(self):
         self.QtStack.setCurrentIndex(2)
