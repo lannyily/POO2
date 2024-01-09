@@ -28,3 +28,20 @@ self.perfilButton.setIcon(QtGui.QIcon("Cliente/imagens/perfil.png"))
 self.label_3.setPixmap(QtGui.QPixmap("Cliente/imagens/logo.png"))
 self.foto13.setPixmap(QtGui.QPixmap("Cliente/imagens/foto13.jpg"))
 
+--- tela casa da polvora --- Ui_tela_casa_polvora
+
+self.label_3.setPixmap(QtGui.QPixmap("Cliente/imagens/logo.png"))
+self.label.setPixmap(QtGui.QPixmap("Cliente/imagens/foto12.jpg"))
+self.label_2.setPixmap(QtGui.QPixmap("Cliente/imagens/foto11.jpg"))
+self.pushButton_perfil.setIcon(QtGui.QIcon("Cliente/imagens/perfil.png"))
+self.pushButton_2.setIcon(QtGui.QIcon("Cliente/imagens/youtube.png"))
+self.pushButton_3.setIcon(QtGui.QIcon("Cliente/imagens/maps.png"))
+
+--- tela entrada gratis --- Ui_reserva_gratis
+self.pushButton_perfil.setIcon(QtGui.QIcon('Cliente/imagens/perfil.png'))
+self.label_3.setPixmap(QtGui.QPixmap('Cliente/imagens/logo.png'))
+self.label_5.setPixmap(QtGui.QPixmap('Cliente/imagens/gratis.png'))
+
+--- tela entrada paga --- Ui_reserva_paga
+self.pushButton_perfil.setIcon(QtGui.QIcon('Cliente/imagens/perfil.png'))
+self.label_3.setPixmap(QtGui.QPixmap("Cliente/imagens/logo.png"))

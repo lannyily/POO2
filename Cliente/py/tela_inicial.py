@@ -95,7 +95,7 @@ class Ui_tela_inicial(object):
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"    background-color: rgb(0, 255, 0);\n"
+"    background-color: rgb(0, 0, 255);\n"
 "border-radius: 7px;\n"
 "}\n"
 "\n"
@@ -114,7 +114,7 @@ class Ui_tela_inicial(object):
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"    background-color: rgb(0, 255, 0);\n"
+"    background-color: rgb(0, 0, 255);\n"
 "border-radius: 7px;\n"
 "}\n"
 "\n"
@@ -133,7 +133,7 @@ class Ui_tela_inicial(object):
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"    background-color: rgb(0, 255, 0);\n"
+"    background-color: rgb(0, 0, 255);\n"
 "border-radius: 7px;\n"
 "}\n"
 "\n"
@@ -152,7 +152,7 @@ class Ui_tela_inicial(object):
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"    background-color: rgb(0, 255, 0);\n"
+"    background-color: rgb(0, 0, 255);\n"
 "border-radius: 7px;\n"
 "}\n"
 "\n"
@@ -366,6 +366,7 @@ class Ui_tela_inicial(object):
 "           margin: 4px 2px;\n"
 "           cursor: pointer;\n"
 "           border-radius: 8px;\n"
+"            font-weight: bold;\n"
 "        }\n"
 "        QPushButton:hover {\n"
 "           background-color: rgb(85, 170, 255); \n"
@@ -386,7 +387,7 @@ class Ui_tela_inicial(object):
         self.label_12.setScaledContents(True)
         self.label_12.setObjectName("label_12")
         self.pushButton_2 = QtWidgets.QPushButton(self.frame_2)
-        self.pushButton_2.setGeometry(QtCore.QRect(-10, 140, 401, 41))
+        self.pushButton_2.setGeometry(QtCore.QRect(-20, 140, 401, 41))
         self.pushButton_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton_2.setStyleSheet("\n"
 "QPushButton {\n"
@@ -397,10 +398,11 @@ class Ui_tela_inicial(object):
 "           text-align: center;\n"
 "           text-decoration: none;\n"
 "           display: inline-block;\n"
-"           font-size: 16px;\n"
+"           font-size: 15px;\n"
 "           margin: 4px 2px;\n"
 "           cursor: pointer;\n"
 "           border-radius: 8px;\n"
+" font-weight: bold;\n"
 "        }\n"
 "        QPushButton:hover {\n"
 "           background-color: rgb(85, 170, 255); \n"
@@ -431,10 +433,11 @@ class Ui_tela_inicial(object):
 "           text-align: center;\n"
 "           text-decoration: none;\n"
 "           display: inline-block;\n"
-"           font-size: 16px;\n"
+"           font-size: 15px;\n"
 "           margin: 4px 2px;\n"
 "           cursor: pointer;\n"
 "           border-radius: 8px;\n"
+" font-weight: bold;\n"
 "        }\n"
 "        QPushButton:hover {\n"
 "           background-color: rgb(85, 170, 255); \n"
@@ -475,11 +478,9 @@ class Ui_tela_inicial(object):
         self.label_6.setPixmap(QtGui.QPixmap("Cliente/imagens/foto8.png"))
         self.label_7.setPixmap(QtGui.QPixmap("Cliente/imagens/foto9.png"))
         self.label_8.setPixmap(QtGui.QPixmap("Cliente/imagens/foto10.png"))
-        
         self.label_11.setPixmap(QtGui.QPixmap("Cliente/imagens/excursao1.png"))
         self.label_12.setPixmap(QtGui.QPixmap("Cliente/imagens/excursao2.png"))
         self.label_13.setPixmap(QtGui.QPixmap("Cliente/imagens/excursao3.png"))
-        
         self.perfilButton.setIcon(QtGui.QIcon("Cliente/imagens/perfil.png"))
 
     def retranslateUi(self, MainWindow):

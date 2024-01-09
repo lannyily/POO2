@@ -28,6 +28,10 @@ class ClienteThread(threading.Thread):
             pass
         elif tipo_usuario == 'funcionario':
             pass
+        elif tipo_usuario == 'sair':
+            print('O Usuário solicitou sair. Fechando a conexão...')
+            self.csocket.send("Desconectado pelo servidor".encode('utf-8'))
+            self.csocket.close()
         else:
             print(f'Tipo de usuário não reconhecido: {tipo_usuario}')
             self.csocket.close()
@@ -38,7 +42,7 @@ class ClienteThread(threading.Thread):
                 data = self.csocket.recv(1024).decode()
                 operacao, *dados = data.split(';')
                 dados = ';'.join(dados)
-                print('Operação:', operacao)
+                print('Operação externa:', operacao)
                 print('Dados:', dados)
 
                 if operacao == 'sair':
@@ -56,7 +60,7 @@ class ClienteThread(threading.Thread):
                             data_operacao = self.csocket.recv(1024).decode('utf-8')
                             operacao, *dados_operacao = data_operacao.split(';')
                             dados_operacao = ';'.join(dados_operacao)
-                            print('Operação:', operacao)
+                            print('Operação dentro do login:', operacao)
                             print('Dados:', dados_operacao)
                             
                             if operacao == 'sair':
@@ -70,9 +74,23 @@ class ClienteThread(threading.Thread):
                                 print(email_busca)
                                 print("Realizando busca...")
                                 resultado = self.busca(email_busca)
-                            elif operacao == 'logout':
-                                print('Desconectando usuário...')
-                                break
+                                
+                            
+                                data_operacao = self.csocket.recv(1024).decode('utf-8')
+                                operacao, *dados_operacao = data_operacao.split(';')
+                                dados_operacao = ';'.join(dados_operacao)
+                                print('Operação dentro do perfil:', operacao)
+                                print('Dados:', dados_operacao)
+                                    
+                                if operacao == 'excluir':
+                                    print('Excluindo conta...')
+                                    if self.verificar_usuario_senha(dados_operacao):
+                                        self.excluir_conta(email_busca)
+                                        break
+                                    else:
+                                        self.csocket.send("Senha incorreta".encode('utf-8'))
+                                else:
+                                    print('Operação não reconhecida:', operacao)
                             else:
                                 print('Operação não reconhecida:', operacao)
 
@@ -118,7 +136,17 @@ class ClienteThread(threading.Thread):
             print(f"Erro durante a execução da thread: {e}")
         finally:
             self.csocket.close()
-        
+    
+    def excluir_conta(self, email):
+        try:
+            with conexao.cursor() as cursor:
+                cursor.execute("DELETE FROM contas WHERE email = %s", (email,))
+                conexao.commit()
+                self.csocket.send("Conta excluida com sucesso!".encode('utf-8'))
+        except Exception as e:
+            print(f"Erro durante a exclusão da conta: {e}")
+    
+    
     def verificar_usuario_senha(self, dados):
         while True:
             email, senha = dados.split(';')

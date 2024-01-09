@@ -1,12 +1,16 @@
 import sys
 import os
+import socket
+import threading
+import hashlib
+import mysql.connector as mysql
+
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import QMessageBox, QMainWindow, QApplication
-import mysql.connector as mysql
-import socket
-import threading
 from PyQt5.QtWidgets import QDialog
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtCore import Qt, QUrl
 
 from classes import Conta, Ingresso_gratuito, Ingresso_pago
 
@@ -15,13 +19,14 @@ from py.tela_inicial import Ui_tela_inicial
 from py.tela_login import Ui_tela_login
 from py.tela_perfil import Ui_tela_perfil
 from py.tela_casa_polvora import Ui_tela_casa_polvora
-from py.tela_casa_pol_reserva import Ui_tela_casa_pol_reserva
 from py.tela_conf_com_senha import Ui_tela_conf_com_senha
+from py.tela_reserva_gratis import Ui_reserva_gratis
+from py.tela_reserva_paga import Ui_reserva_paga
 
 class TelaConfComSenha(QDialog, Ui_tela_conf_com_senha):
     def __init__(self, parent=None):
         super(TelaConfComSenha, self).__init__(parent)
-        self.setupUi(self)
+        self.tela_conf_com_senha.setupUi(self)
 
 class Ui_Main(QtWidgets.QWidget):
     """
@@ -56,6 +61,8 @@ class Ui_Main(QtWidgets.QWidget):
         self.stack3 = QtWidgets.QMainWindow()
         self.stack4 = QtWidgets.QMainWindow()
         self.stack5 = QtWidgets.QMainWindow()
+        self.stack6 = QtWidgets.QMainWindow()
+        self.stack7 = QtWidgets.QMainWindow()
         
         self.tela_login = Ui_tela_login()
         self.tela_login.setupUi(self.stack0)
@@ -69,14 +76,17 @@ class Ui_Main(QtWidgets.QWidget):
         self.tela_casa_polvora = Ui_tela_casa_polvora()
         self.tela_casa_polvora.setupUi(self.stack3)
         
-        self.tela_casa_polvora_reserva = Ui_tela_casa_pol_reserva()
-        self.tela_casa_polvora_reserva.setupUi(self.stack4)
+        self.tela_reserva_gratis = Ui_reserva_gratis()
+        self.tela_reserva_gratis.setupUi(self.stack4)
         
         self.tela_perfil = Ui_tela_perfil()
         self.tela_perfil.setupUi(self.stack5)
         
         self.tela_conf_com_senha = Ui_tela_conf_com_senha()
-        self.tela_conf_com_senha.setupUi(self)
+        self.tela_conf_com_senha.setupUi(self.stack6)
+        
+        self.tela_reserva_paga = Ui_reserva_paga()
+        self.tela_reserva_paga.setupUi(self.stack7)
         
         self.QtStack.addWidget(self.stack0)
         self.QtStack.addWidget(self.stack1)
@@ -84,8 +94,10 @@ class Ui_Main(QtWidgets.QWidget):
         self.QtStack.addWidget(self.stack3)
         self.QtStack.addWidget(self.stack4)
         self.QtStack.addWidget(self.stack5)
+        self.QtStack.addWidget(self.stack6)
+        self.QtStack.addWidget(self.stack7)
         
-class Main(QMainWindow, Ui_Main):
+class Main(Ui_Main, QMainWindow):
     """
     A classe é usada para tudas as funcionalidades do sistema, desde os botões, calendarias, selação das escolhas, as funções que executam as funcionalidades e a conexão com o banco de dados
     
@@ -161,8 +173,6 @@ class Main(QMainWindow, Ui_Main):
         self.cliente_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.cliente_socket.connect(self.addr)
         
-        self.tela_conf_com_senha = TelaConfComSenha(self)
-        
         tipo_usuario = 'cliente'
         self.cliente_socket.send(tipo_usuario.encode())
         print(f'Tipo de usuário enviado para o sevidor: {tipo_usuario}')
@@ -183,9 +193,15 @@ class Main(QMainWindow, Ui_Main):
         self.tela_perfil.pushButton_voltar.clicked.connect(self.abrir_tela_inicial)
         self.tela_perfil.pushButton_excluir_conta.clicked.connect(self.abrir_tela_conf_com_senha)
         
+        self.tela_conf_com_senha.pushButton_voltar.clicked.connect(self.abrir_tela_perfil)
+        self.tela_conf_com_senha.pushButton_exckuir.clicked.connect(self.excluir_conta)
+        
         self.tela_casa_polvora.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_casa_polvora.pushButton_voltar.clicked.connect(self.abrir_tela_inicial)
-        self.tela_casa_polvora.pushButton.clicked.connect(self.abrir_tela_casa_polvora_reserva)
+        self.tela_casa_polvora.pushButton_perfil.clicked.connect(self.abrir_tela_perfil)
+        self.tela_casa_polvora.pushButton_2.clicked.connect(self.abrir_link_youtube_casa_polvora)
+        self.tela_casa_polvora.pushButton_3.clicked.connect(self.abrir_link_google_maps_casa_polvora)
+        self.tela_casa_polvora.pushButton.clicked.connect(self.abrir_tela_reserva_gratis)
         
         self.tela_casa_polvora_reserva.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_casa_polvora_reserva.pushButton_voltar.clicked.connect(self.abrir_tela_casa_polvora)
@@ -232,7 +248,9 @@ class Main(QMainWindow, Ui_Main):
 
             if email and senha:
                 try:
-                    mensagem = f"login;{email};{senha}"
+                    senha_md5 = hashlib.md5(senha.encode()).hexdigest()
+                    
+                    mensagem = f"login;{email};{senha_md5}"
 
                     self.cliente_socket.send(mensagem.encode('utf-8'))
                     print('1 - Mensagem enviada:', mensagem)
@@ -277,7 +295,9 @@ class Main(QMainWindow, Ui_Main):
 
         if not nome == '' or cpf == '' or email == '' or senha == '':
             try:
-                msg = f'cadastro;{nome};{cpf};{dataN};{email};{senha}'
+                senha_md5 = hashlib.md5(senha.encode()).hexdigest()
+                
+                msg = f'cadastro;{nome};{cpf};{dataN};{email};{senha_md5}'
                 print(f'Mensagem enviada: {msg}')
                 self.cliente_socket.send(msg.encode())
                 
@@ -327,6 +347,42 @@ class Main(QMainWindow, Ui_Main):
         QMessageBox.information(None, '...', 'Cadastro cancelado!')
         self.QtStack.setCurrentIndex(0)
 
+    def excluir_conta(self):
+        senha = self.tela_conf_com_senha.lineEdit_senha.text()
+        if senha:
+            try:
+                senha_md5 = hashlib.md5(senha.encode()).hexdigest()
+                
+                msg = f'excluir;{self.email};{senha_md5}'
+                print(f'Mensagem enviada: {msg}')
+                self.cliente_socket.send(msg.encode())
+                
+                resp = self.cliente_socket.recv(1024).decode()
+                print(f'Resposta recebida: {resp}')
+                
+                if resp.lower() == "conta excluida com sucesso!":
+                    self.tela_conf_com_senha.lineEdit_senha.setText("")
+                    print("Conta excluida com sucesso!")
+                    QMessageBox.information(None, '...', 'Conta excluida com sucesso!')
+                    self.abrir_tela_login()
+                    
+                elif resp.lower() == "senha incorreta":
+                    self.mostrar_mensagem_erro("Senha incorreta. Tente novamente.")
+                    self.tela_conf_com_senha.lineEdit_senha.setText("")
+                else:
+                    self.mostrar_mensagem_erro("Erro ao excluir conta")
+                    
+            except Exception as e:
+                print(f"Erro: {e}")
+        else:
+            self.mostrar_mensagem_erro("Preencha todos os campos")
+
+    def abrir_link_youtube_casa_polvora(self):
+        QDesktopServices.openUrl(QUrl("https://www.youtube.com/watch?v=2RI0kLBV9Mw"))
+    
+    def abrir_link_google_maps_casa_polvora(self):
+        QDesktopServices.openUrl(QUrl("https://www.google.com/maps/place/Casa+da+Pólvora/@-7.0224187,-42.1316923,17z/data=!3m1!4b1!4m6!3m5!1s0x79c91375b1794b7:0xd075cbbe61f291b2!8m2!3d-7.022424!4d-42.129112!16s%2Fg%2F11txrpwcrh?hl=pt-BR&entry=ttu"))
+    
     def mostrar_mensagem_erro(self, mensagem):
         QMessageBox.critical(self, "...", mensagem)
 
@@ -350,7 +406,7 @@ class Main(QMainWindow, Ui_Main):
     def abrir_tela_casa_polvora(self):
         self.QtStack.setCurrentIndex(3)
         
-    def abrir_tela_casa_polvora_reserva(self):
+    def abrir_tela_reserva_gratis(self):
         self.QtStack.setCurrentIndex(4)
         
     def abrir_tela_perfil(self):
@@ -376,9 +432,11 @@ class Main(QMainWindow, Ui_Main):
             print(f"Erro ao abrir a tela de perfil: {e}")
     
     def abrir_tela_conf_com_senha(self):
-        tela_conf_com_senha = TelaConfComSenha(self)
-        tela_conf_com_senha.show()
-
+        self.QtStack.setCurrentIndex(6)
+    
+    def abrir_tela_reserva_paga(self):
+        self.QtStack.setCurrentIndex(7)
+        
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     show_main = Main()

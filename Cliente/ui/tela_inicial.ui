@@ -167,7 +167,7 @@ border-radius: 7px;
 }
 
 QPushButton:hover{
-	background-color: rgb(0, 255, 0);
+	background-color: rgb(0, 0, 255);
 border-radius: 7px;
 }
 
@@ -199,7 +199,7 @@ border-radius: 7px;
 }
 
 QPushButton:hover{
-	background-color: rgb(0, 255, 0);
+	background-color: rgb(0, 0, 255);
 border-radius: 7px;
 }
 
@@ -231,7 +231,7 @@ border-radius: 7px;
 }
 
 QPushButton:hover{
-	background-color: rgb(0, 255, 0);
+	background-color: rgb(0, 0, 255);
 border-radius: 7px;
 }
 
@@ -263,7 +263,7 @@ border-radius: 7px;
 }
 
 QPushButton:hover{
-	background-color: rgb(0, 255, 0);
+	background-color: rgb(0, 0, 255);
 border-radius: 7px;
 }
 
@@ -679,6 +679,7 @@ QPushButton {
            margin: 4px 2px;
            cursor: pointer;
            border-radius: 8px;
+            font-weight: bold;
         }
         QPushButton:hover {
            background-color: rgb(85, 170, 255); 
@@ -727,7 +728,7 @@ QPushButton {
         <widget class="QPushButton" name="pushButton_2">
          <property name="geometry">
           <rect>
-           <x>-10</x>
+           <x>-20</x>
            <y>140</y>
            <width>401</width>
            <height>41</height>
@@ -746,10 +747,11 @@ QPushButton {
            text-align: center;
            text-decoration: none;
            display: inline-block;
-           font-size: 16px;
+           font-size: 15px;
            margin: 4px 2px;
            cursor: pointer;
            border-radius: 8px;
+ font-weight: bold;
         }
         QPushButton:hover {
            background-color: rgb(85, 170, 255); 
@@ -814,10 +816,11 @@ QPushButton {
            text-align: center;
            text-decoration: none;
            display: inline-block;
-           font-size: 16px;
+           font-size: 15px;
            margin: 4px 2px;
            cursor: pointer;
            border-radius: 8px;
+ font-weight: bold;
         }
         QPushButton:hover {
            background-color: rgb(85, 170, 255); 
