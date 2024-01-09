@@ -23,6 +23,9 @@
       <height>561</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid black;</string>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -397,15 +400,15 @@ border-radius: 7px;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255,222,173);</string>
+     <string notr="true">background-color: rgb(255, 222, 124);</string>
     </property>
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>580</x>
        <y>30</y>
-       <width>151</width>
-       <height>151</height>
+       <width>152</width>
+       <height>157</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -414,16 +417,32 @@ border-radius: 7px;
         <property name="font">
          <font>
           <family>MS Shell Dlg 2</family>
-          <pointsize>8</pointsize>
-          <weight>9</weight>
+          <pointsize>-1</pointsize>
+          <weight>50</weight>
           <italic>false</italic>
           <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(92, 160, 212);
-font: 75 8pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(255, 255, 255);</string>
+         <string notr="true">QPushButton {
+           
+	background-color: rgb(111, 125, 255);
+           border: none;
+           color: white;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 16px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           background-color: rgb(85, 170, 255); 
+        }</string>
         </property>
         <property name="text">
          <string>Restaurantes </string>
@@ -433,8 +452,23 @@ color: rgb(255, 255, 255);</string>
       <item>
        <widget class="QPushButton" name="pushButton_hotel">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(92, 160, 212);
-color: rgb(255, 255, 255);</string>
+         <string notr="true">QPushButton {
+           
+	background-color: rgb(111, 125, 255);
+           border: none;
+           color: white;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 16px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           background-color: rgb(85, 170, 255); 
+        }</string>
         </property>
         <property name="text">
          <string>Hotéis </string>
@@ -444,8 +478,23 @@ color: rgb(255, 255, 255);</string>
       <item>
        <widget class="QPushButton" name="pushButton_cultura_lazer">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(92, 160, 212);
-color: rgb(255, 255, 255);</string>
+         <string notr="true">QPushButton {
+           
+	background-color: rgb(111, 125, 255);
+           border: none;
+           color: white;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 16px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           background-color: rgb(85, 170, 255); 
+        }</string>
         </property>
         <property name="text">
          <string>Cultura e Lazer</string>
@@ -473,39 +522,83 @@ color: rgb(255, 255, 255);</string>
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QWidget" name="layoutWidget">
+    <widget class="QPushButton" name="pushButton_sair">
      <property name="geometry">
       <rect>
-       <x>980</x>
-       <y>30</y>
-       <width>141</width>
+       <x>1000</x>
+       <y>140</y>
+       <width>121</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+           
+	background-color: rgb(111, 125, 255);
+           border: none;
+           color: white;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 16px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           background-color: rgb(85, 170, 255); 
+        }</string>
+     </property>
+     <property name="text">
+      <string>SAIR</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="perfilButton">
+     <property name="geometry">
+      <rect>
+       <x>1020</x>
+       <y>40</y>
+       <width>81</width>
        <height>81</height>
       </rect>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <widget class="QPushButton" name="pushButton_sair">
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(92, 160, 212);
-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>SAIR</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_perfil">
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(70, 0, 211);
-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>Perfil</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+    font-size: 30px;
+    border-radius: 40px;
+}
+
+QPushButton:hover {
+    background-color: rgb(255, 255, 255);
+}
+
+QPushButton[objectName=&quot;perfilButton&quot;] {
+    qproperty-toolTip: &quot;Perfil&quot;;
+}
+
+QToolTip {
+    font-family: 'SansSerif';
+    font-size: 10pt;
+}
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../imagens/perfil.png</normaloff>../imagens/perfil.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>80</width>
+       <height>80</height>
+      </size>
+     </property>
     </widget>
    </widget>
    <widget class="QScrollArea" name="scrollArea">
@@ -541,6 +634,64 @@ color: rgb(255, 255, 255);</string>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
+        <widget class="QLabel" name="label_11">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>-70</y>
+           <width>371</width>
+           <height>251</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>../imagens/excursao1.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton">
+         <property name="geometry">
+          <rect>
+           <x>-10</x>
+           <y>140</y>
+           <width>391</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">
+QPushButton {
+           
+	background-color: rgb(111, 125, 255);
+           border: none;
+           color: white;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 16px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           background-color: rgb(85, 170, 255); 
+        }
+   </string>
+         </property>
+         <property name="text">
+          <string>Caminho Espiritual: A Capital da Fé</string>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+        </widget>
        </widget>
       </item>
       <item>
@@ -554,6 +705,61 @@ color: rgb(255, 255, 255);</string>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
+        <widget class="QLabel" name="label_12">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>-20</y>
+           <width>371</width>
+           <height>221</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>../imagens/excursao2.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="geometry">
+          <rect>
+           <x>-10</x>
+           <y>140</y>
+           <width>401</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">
+QPushButton {
+           
+	background-color: rgb(111, 125, 255);
+           border: none;
+           color: white;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 16px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           background-color: rgb(85, 170, 255); 
+        }
+   </string>
+         </property>
+         <property name="text">
+          <string>Herança e Identidade: Riquezas e Tradições</string>
+         </property>
+        </widget>
        </widget>
       </item>
       <item>
@@ -567,6 +773,61 @@ color: rgb(255, 255, 255);</string>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
+        <widget class="QLabel" name="label_13">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>-50</y>
+           <width>371</width>
+           <height>231</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>../imagens/excursao3.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="geometry">
+          <rect>
+           <x>-10</x>
+           <y>140</y>
+           <width>391</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">
+QPushButton {
+           
+	background-color: rgb(111, 125, 255);
+           border: none;
+           color: white;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 16px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           background-color: rgb(85, 170, 255); 
+        }
+   </string>
+         </property>
+         <property name="text">
+          <string>Raízes Históricas: Uma Jornada pelo Passado</string>
+         </property>
+        </widget>
        </widget>
       </item>
      </layout>
@@ -577,7 +838,7 @@ color: rgb(255, 255, 255);</string>
      <rect>
       <x>30</x>
       <y>240</y>
-      <width>211</width>
+      <width>221</width>
       <height>41</height>
      </rect>
     </property>
@@ -590,7 +851,8 @@ color: rgb(255, 255, 255);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(92, 160, 212);
-color: rgb(255, 255, 255);</string>
+color: rgb(255, 255, 255);
+border: 1px solid black;</string>
     </property>
     <property name="text">
      <string> Pontos Históricos </string>

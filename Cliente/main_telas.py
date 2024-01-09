@@ -6,16 +6,22 @@ from PyQt5.QtWidgets import QMessageBox, QMainWindow, QApplication
 import mysql.connector as mysql
 import socket
 import threading
+from PyQt5.QtWidgets import QDialog
 
-from cadastro import Cadastro
 from classes import Conta, Ingresso_gratuito, Ingresso_pago
 
-from tela_cadastro import Ui_tela_cadastro
-from tela_inicial import Ui_tela_inicial
-from tela_login import Ui_tela_login
-from tela_perfil import Ui_tela_perfil
-from tela_casa_polvora import Ui_tela_casa_polvora
-from tela_casa_pol_reserva import Ui_tela_casa_pol_reserva
+from py.tela_cadastro import Ui_tela_cadastro
+from py.tela_inicial import Ui_tela_inicial
+from py.tela_login import Ui_tela_login
+from py.tela_perfil import Ui_tela_perfil
+from py.tela_casa_polvora import Ui_tela_casa_polvora
+from py.tela_casa_pol_reserva import Ui_tela_casa_pol_reserva
+from py.tela_conf_com_senha import Ui_tela_conf_com_senha
+
+class TelaConfComSenha(QDialog, Ui_tela_conf_com_senha):
+    def __init__(self, parent=None):
+        super(TelaConfComSenha, self).__init__(parent)
+        self.setupUi(self)
 
 class Ui_Main(QtWidgets.QWidget):
     """
@@ -38,11 +44,7 @@ class Ui_Main(QtWidgets.QWidget):
         ----------
         Main : None
         
-        
-        
         """
-        
-        
         Main.setObjectName('Main')
         Main.resize(640, 480)
 
@@ -72,6 +74,9 @@ class Ui_Main(QtWidgets.QWidget):
         
         self.tela_perfil = Ui_tela_perfil()
         self.tela_perfil.setupUi(self.stack5)
+        
+        self.tela_conf_com_senha = Ui_tela_conf_com_senha()
+        self.tela_conf_com_senha.setupUi(self)
         
         self.QtStack.addWidget(self.stack0)
         self.QtStack.addWidget(self.stack1)
@@ -156,6 +161,8 @@ class Main(QMainWindow, Ui_Main):
         self.cliente_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.cliente_socket.connect(self.addr)
         
+        self.tela_conf_com_senha = TelaConfComSenha(self)
+        
         tipo_usuario = 'cliente'
         self.cliente_socket.send(tipo_usuario.encode())
         print(f'Tipo de usuário enviado para o sevidor: {tipo_usuario}')
@@ -170,10 +177,11 @@ class Main(QMainWindow, Ui_Main):
         
         self.tela_inicial.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_inicial.pushButton_casa_pol.clicked.connect(self.abrir_tela_casa_polvora)
-        self.tela_inicial.pushButton_perfil.clicked.connect(self.abrir_tela_perfil)
+        self.tela_inicial.perfilButton.clicked.connect(self.abrir_tela_perfil)
         
         self.tela_perfil.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_perfil.pushButton_voltar.clicked.connect(self.abrir_tela_inicial)
+        self.tela_perfil.pushButton_excluir_conta.clicked.connect(self.abrir_tela_conf_com_senha)
         
         self.tela_casa_polvora.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_casa_polvora.pushButton_voltar.clicked.connect(self.abrir_tela_inicial)
@@ -215,8 +223,7 @@ class Main(QMainWindow, Ui_Main):
         if resposta.lower() == 'Desconectado pelo servidor':
             self.cliente_socket.close()     
         self.close()
-        print('Saiu do sistema')
-        
+        print('Saiu do sistema')  
         
     def login(self):
         while True:
@@ -259,7 +266,6 @@ class Main(QMainWindow, Ui_Main):
                 elif not senha:
                     self.mostrar_mensagem_erro("Campo de senha vazio. Preencha todos os campos.")
                 break  
-
 
     def cadastro(self):
         print('Cadastro')
@@ -368,9 +374,12 @@ class Main(QMainWindow, Ui_Main):
                 print("Resposta do servidor em formato inesperado.")
         except Exception as e:
             print(f"Erro ao abrir a tela de perfil: {e}")
+    
+    def abrir_tela_conf_com_senha(self):
+        tela_conf_com_senha = TelaConfComSenha(self)
+        tela_conf_com_senha.show()
 
 if __name__ == '__main__':
-    
     app = QApplication(sys.argv)
     show_main = Main()
     sys.exit(app.exec_())

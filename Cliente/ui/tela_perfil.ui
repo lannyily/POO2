@@ -33,17 +33,32 @@
      <property name="geometry">
       <rect>
        <x>990</x>
-       <y>20</y>
+       <y>32</y>
        <width>141</width>
-       <height>100</height>
+       <height>91</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QPushButton" name="pushButton_sair">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(92, 160, 212);
-color: rgb(255, 255, 255);</string>
+         <string notr="true">QPushButton {
+           
+	background-color: rgb(111, 125, 255);
+           border: none;
+           color: white;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 16px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           background-color: rgb(85, 170, 255); 
+        }</string>
         </property>
         <property name="text">
          <string>SAIR</string>
@@ -53,8 +68,23 @@ color: rgb(255, 255, 255);</string>
       <item>
        <widget class="QPushButton" name="pushButton_voltar">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(92, 160, 212);
-color: rgb(255, 255, 255);</string>
+         <string notr="true">QPushButton {
+           
+	background-color: rgb(111, 125, 255);
+           border: none;
+           color: white;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 16px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           background-color: rgb(85, 170, 255); 
+        }</string>
         </property>
         <property name="text">
          <string>Voltar</string>
@@ -228,22 +258,6 @@ color: rgb(255, 255, 255);</string>
      <string> Histórico de compras</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_excluir_conta">
-    <property name="geometry">
-     <rect>
-      <x>1050</x>
-      <y>160</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(247, 247, 247);</string>
-    </property>
-    <property name="text">
-     <string>Excluir conta </string>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
      <rect>
@@ -262,6 +276,45 @@ color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>Olá,</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_excluir_conta">
+    <property name="geometry">
+     <rect>
+      <x>1000</x>
+      <y>160</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+           
+	
+	
+	
+	
+	background-color: rgb(255, 0, 0);
+           border: none;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+color: white;
+           font-size: 15px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+          
+	
+	
+	background-color: rgb(190, 16, 16);
+        }</string>
+    </property>
+    <property name="text">
+     <string>Excluir conta </string>
     </property>
    </widget>
   </widget>

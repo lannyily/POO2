@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>964</width>
-    <height>743</height>
+    <width>944</width>
+    <height>737</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>-30</x>
       <y>-30</y>
       <width>971</width>
-      <height>841</height>
+      <height>851</height>
      </rect>
     </property>
     <property name="text">
@@ -30,11 +30,33 @@
      <pixmap>../imagens/foto.jpg</pixmap>
     </property>
    </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>40</y>
+      <width>381</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../imagens/logo.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>230</y>
+      <x>290</x>
+      <y>260</y>
       <width>371</width>
       <height>261</height>
      </rect>
@@ -135,7 +157,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
+     <widget class="QWidget" name="layoutWidget_2">
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -173,26 +195,13 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QPushButton" name="pushButton_fechar">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>510</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Fechar</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>660</y>
-      <width>541</width>
-      <height>51</height>
+      <x>20</x>
+      <y>600</y>
+      <width>411</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -202,30 +211,25 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(57, 0, 0);</string>
+     <string notr="true">color: rgb(57, 0, 0);
+background-color: rgb(245,222,179);</string>
     </property>
     <property name="text">
      <string>Oeyras do Piauhi - 1758 - Manuscrita, aguarelada; 56x65,5 cm 
 Fonte: Biblioteca Nacional de Lisboa</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5">
+   <widget class="QPushButton" name="pushButton_fechar">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>50</y>
-      <width>361</width>
-      <height>191</height>
+      <x>430</x>
+      <y>540</y>
+      <width>93</width>
+      <height>28</height>
      </rect>
     </property>
     <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>../imagens/logo.png</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
+     <string>Fechar</string>
     </property>
    </widget>
   </widget>
@@ -234,7 +238,7 @@ Fonte: Biblioteca Nacional de Lisboa</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>964</width>
+     <width>944</width>
      <height>26</height>
     </rect>
    </property>

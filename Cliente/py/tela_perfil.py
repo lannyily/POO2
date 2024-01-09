@@ -23,19 +23,49 @@ class Ui_tela_perfil(object):
         self.widget.setStyleSheet("background-color: rgb(255,222,173);")
         self.widget.setObjectName("widget")
         self.layoutWidget = QtWidgets.QWidget(self.widget)
-        self.layoutWidget.setGeometry(QtCore.QRect(990, 20, 141, 100))
+        self.layoutWidget.setGeometry(QtCore.QRect(990, 32, 141, 91))
         self.layoutWidget.setObjectName("layoutWidget")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.pushButton_sair = QtWidgets.QPushButton(self.layoutWidget)
-        self.pushButton_sair.setStyleSheet("background-color: rgb(92, 160, 212);\n"
-"color: rgb(255, 255, 255);")
+        self.pushButton_sair.setStyleSheet("QPushButton {\n"
+"           \n"
+"    background-color: rgb(111, 125, 255);\n"
+"           border: none;\n"
+"           color: white;\n"
+"           padding: 10px 20px;\n"
+"           text-align: center;\n"
+"           text-decoration: none;\n"
+"           display: inline-block;\n"
+"           font-size: 16px;\n"
+"           margin: 4px 2px;\n"
+"           cursor: pointer;\n"
+"           border-radius: 8px;\n"
+"        }\n"
+"        QPushButton:hover {\n"
+"           background-color: rgb(85, 170, 255); \n"
+"        }")
         self.pushButton_sair.setObjectName("pushButton_sair")
         self.verticalLayout_3.addWidget(self.pushButton_sair)
         self.pushButton_voltar = QtWidgets.QPushButton(self.layoutWidget)
-        self.pushButton_voltar.setStyleSheet("background-color: rgb(92, 160, 212);\n"
-"color: rgb(255, 255, 255);")
+        self.pushButton_voltar.setStyleSheet("QPushButton {\n"
+"           \n"
+"    background-color: rgb(111, 125, 255);\n"
+"           border: none;\n"
+"           color: white;\n"
+"           padding: 10px 20px;\n"
+"           text-align: center;\n"
+"           text-decoration: none;\n"
+"           display: inline-block;\n"
+"           font-size: 16px;\n"
+"           margin: 4px 2px;\n"
+"           cursor: pointer;\n"
+"           border-radius: 8px;\n"
+"        }\n"
+"        QPushButton:hover {\n"
+"           background-color: rgb(85, 170, 255); \n"
+"        }")
         self.pushButton_voltar.setObjectName("pushButton_voltar")
         self.verticalLayout_3.addWidget(self.pushButton_voltar)
         self.label_3 = QtWidgets.QLabel(self.widget)
@@ -102,10 +132,6 @@ class Ui_tela_perfil(object):
         self.label.setStyleSheet("background-color: rgb(92, 160, 212);\n"
 "color: rgb(255, 255, 255);")
         self.label.setObjectName("label")
-        self.pushButton_excluir_conta = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_excluir_conta.setGeometry(QtCore.QRect(1050, 160, 93, 28))
-        self.pushButton_excluir_conta.setStyleSheet("background-color: rgb(247, 247, 247);")
-        self.pushButton_excluir_conta.setObjectName("pushButton_excluir_conta")
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit.setGeometry(QtCore.QRect(40, 180, 51, 41))
         font = QtGui.QFont()
@@ -114,6 +140,33 @@ class Ui_tela_perfil(object):
         font.setWeight(75)
         self.lineEdit.setFont(font)
         self.lineEdit.setObjectName("lineEdit")
+        self.pushButton_excluir_conta = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_excluir_conta.setGeometry(QtCore.QRect(1000, 160, 141, 41))
+        self.pushButton_excluir_conta.setStyleSheet("QPushButton {\n"
+"           \n"
+"    \n"
+"    \n"
+"    \n"
+"    \n"
+"    background-color: rgb(255, 0, 0);\n"
+"           border: none;\n"
+"           padding: 10px 20px;\n"
+"           text-align: center;\n"
+"           text-decoration: none;\n"
+"           display: inline-block;\n"
+"color: white;\n"
+"           font-size: 15px;\n"
+"           margin: 4px 2px;\n"
+"           cursor: pointer;\n"
+"           border-radius: 8px;\n"
+"        }\n"
+"        QPushButton:hover {\n"
+"          \n"
+"    \n"
+"    \n"
+"    background-color: rgb(190, 16, 16);\n"
+"        }")
+        self.pushButton_excluir_conta.setObjectName("pushButton_excluir_conta")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1174, 26))
@@ -126,8 +179,8 @@ class Ui_tela_perfil(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
-        self.label_3.setPixmap(QtGui.QPixmap("imagens/logo.png"))
-        self.foto13.setPixmap(QtGui.QPixmap("imagens/foto13.jpg"))
+        self.label_3.setPixmap(QtGui.QPixmap("Cliente/imagens/logo.png"))
+        self.foto13.setPixmap(QtGui.QPixmap("Cliente/imagens/foto13.jpg"))
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -153,8 +206,8 @@ class Ui_tela_perfil(object):
         item = self.tableWidget.horizontalHeaderItem(8)
         item.setText(_translate("MainWindow", "Status"))
         self.label.setText(_translate("MainWindow", " Histórico de compras"))
-        self.pushButton_excluir_conta.setText(_translate("MainWindow", "Excluir conta "))
         self.lineEdit.setText(_translate("MainWindow", "Olá,"))
+        self.pushButton_excluir_conta.setText(_translate("MainWindow", "Excluir conta "))
 
 
 if __name__ == "__main__":

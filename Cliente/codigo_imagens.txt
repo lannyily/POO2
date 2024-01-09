@@ -1,0 +1,30 @@
+--- tela login --- Ui_tela_login
+
+self.label.setPixmap(QtGui.QPixmap("Cliente/imagens/foto.jpg"))
+self.label_5.setPixmap(QtGui.QPixmap("Cliente/imagens/logo.png"))
+
+--- tela cadastro --- Ui_tela_cadastro
+
+self.label.setPixmap(QtGui.QPixmap("Cliente/imagens/foto2.jpg"))
+
+--- tela inicial --- Ui_tela_inicial
+
+self.label_9.setPixmap(QtGui.QPixmap("Cliente/imagens/logo.png"))
+self.label.setPixmap(QtGui.QPixmap("Cliente/imagens/foto3.png"))
+self.label_2.setPixmap(QtGui.QPixmap("Cliente/imagens/foto4.png"))
+self.label_3.setPixmap(QtGui.QPixmap("Cliente/imagens/foto5.png"))
+self.label_4.setPixmap(QtGui.QPixmap("Cliente/imagens/foto6.png"))
+self.label_5.setPixmap(QtGui.QPixmap("Cliente/imagens/foto7.png"))
+self.label_6.setPixmap(QtGui.QPixmap("Cliente/imagens/foto8.png"))
+self.label_7.setPixmap(QtGui.QPixmap("Cliente/imagens/foto9.png"))
+self.label_8.setPixmap(QtGui.QPixmap("Cliente/imagens/foto10.png"))
+self.label_11.setPixmap(QtGui.QPixmap("Cliente/imagens/excursao1.png"))
+self.label_12.setPixmap(QtGui.QPixmap("Cliente/imagens/excursao2.png"))
+self.label_13.setPixmap(QtGui.QPixmap("Cliente/imagens/excursao3.png"))
+self.perfilButton.setIcon(QtGui.QIcon("Cliente/imagens/perfil.png"))
+
+--- tela perfil --- Ui_tela_perfil
+
+self.label_3.setPixmap(QtGui.QPixmap("Cliente/imagens/logo.png"))
+self.foto13.setPixmap(QtGui.QPixmap("Cliente/imagens/foto13.jpg"))
+

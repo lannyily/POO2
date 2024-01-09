@@ -178,7 +178,7 @@ class Ui_tela_cadastro(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
-        self.label.setPixmap(QtGui.QPixmap("imagens/foto2.jpg"))
+        self.label.setPixmap(QtGui.QPixmap("Cliente/imagens/foto2.jpg"))
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
