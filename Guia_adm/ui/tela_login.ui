@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>452</width>
-    <height>598</height>
+    <height>537</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -63,7 +63,7 @@
       <x>50</x>
       <y>210</y>
       <width>361</width>
-      <height>281</height>
+      <height>251</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -75,7 +75,7 @@
        <x>10</x>
        <y>40</y>
        <width>341</width>
-       <height>161</height>
+       <height>131</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -167,19 +167,6 @@ color: rgb(255, 255, 255);</string>
        </item>
       </layout>
      </widget>
-     <widget class="QCommandLinkButton" name="commandLinkButton">
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>120</y>
-        <width>251</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Não tem conta? Clique aqui</string>
-      </property>
-     </widget>
     </widget>
     <widget class="QLabel" name="label_3">
      <property name="geometry">
@@ -208,7 +195,7 @@ color: rgb(255, 255, 255);</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>210</y>
+       <y>180</y>
        <width>341</width>
        <height>61</height>
       </rect>
@@ -261,7 +248,7 @@ border-radius: 9px;
     <property name="geometry">
      <rect>
       <x>180</x>
-      <y>500</y>
+      <y>470</y>
       <width>93</width>
       <height>41</height>
      </rect>

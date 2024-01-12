@@ -1,0 +1,11 @@
+--- tela inicial adm --- Ui_tela_inicial_adm
+
+--- tela login adm --- Ui_tela_login_adm
+self.label.setPixmap(QtGui.QPixmap("Guia_adm/imagens/logo.png"))
+
+--- tela login guia --- Ui_tela_login_guia
+self.label.setPixmap(QtGui.QPixmap("Guia_adm/imagens/logo.png"))
+
+--- tela confirmar com senha --- Ui_tela_conf_com_senha
+
+--- tela atualizar senha --- Ui_tela_atualizar_senha

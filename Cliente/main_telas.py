@@ -203,34 +203,21 @@ class Main(Ui_Main, QMainWindow):
         self.tela_casa_polvora.pushButton_3.clicked.connect(self.abrir_link_google_maps_casa_polvora)
         self.tela_casa_polvora.pushButton.clicked.connect(self.abrir_tela_reserva_gratis)
         
-        self.tela_casa_polvora_reserva.pushButton_sair.clicked.connect(self.sair_do_sistema)
-        self.tela_casa_polvora_reserva.pushButton_voltar.clicked.connect(self.abrir_tela_casa_polvora)
-        self.tela_casa_polvora_reserva.calendarWidget.selectionChanged.connect(self.calendario)
         
         self.email = ''
 
     def sair_do_sistema(self):
-        print("1 saindo do sistema....")
         msg = f'sair'
         self.cliente_socket.send(msg.encode())
-        print('2 saindo do sistema....')
         resposta = self.cliente_socket.recv(1024).decode()
         print(f'Resposta recebida: {resposta}')
-        print('3 saindo do sistema....')
      
         if resposta.lower() == 'desconectado pelo servidor':
-            print('3 saindo do sistema....')
             self.cliente_socket.close() 
-            print('4 saindo do sistema....')
             self.cliente_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            print('5 saindo do sistema....')
             self.cliente_socket.connect(self.addr)
-            print('6 saindo do sistema....')
             self.abrir_tela_login()
-            print('7 saindo do sistema....')
             
-        print('Foi')
-
     def sair(self):
         msg = 'sair'
         self.cliente_socket.send(msg.encode())
@@ -330,6 +317,9 @@ class Main(Ui_Main, QMainWindow):
                 elif resp.lower() == "cpf invalido":
                     self.mostrar_mensagem_erro("CPF inválido. Digite um CPF válido.")
                     self.tela_cadastro.lineEdit_cpf.setText("")
+                elif resp.lower() == "menor de idade":
+                    self.mostrar_mensagem_erro("Menores de idade não podem criar conta.")
+                    self.tela_cadastro.dateEdit_nasci.setDate(QDate.currentDate())
                 else:
                     self.mostrar_mensagem_erro("Erro na criação de conta")
                     
@@ -432,7 +422,7 @@ class Main(Ui_Main, QMainWindow):
             print(f"Erro ao abrir a tela de perfil: {e}")
     
     def abrir_tela_conf_com_senha(self):
-        self.QtStack.setCurrentIndex(6)
+        self.stack6.show()
     
     def abrir_tela_reserva_paga(self):
         self.QtStack.setCurrentIndex(7)

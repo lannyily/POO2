@@ -3,6 +3,8 @@ from PyQt5.QtGui import QPixmap
 import mysql.connector
 from io import BytesIO
 import base64
+import qrcode
+import random
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -21,13 +23,46 @@ class MainWindow(QMainWindow):
         )
         self.cursor = self.conexao.cursor()
 
+        # Gera e armazena a imagem no banco de dados
+        self.gerar_e_armazenar_qr_code()
+
         # Carrega a imagem do banco de dados
         self.carregar_imagem()
+
+    def gerar_e_armazenar_qr_code(self):
+        try:
+            # Gera um número aleatório de 8 dígitos
+            numero_aleatorio = random.randint(10000000, 99999999)
+            print(f"Número aleatório: {numero_aleatorio}")
+            # Cria um QR code a partir do número aleatório
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(str(numero_aleatorio))
+            qr.make(fit=True)
+
+            # Cria uma imagem do QR code
+            img = qr.make_image(fill_color="black", back_color="white")
+
+            # Converte a imagem para bytes
+            buffer = BytesIO()
+            img.save(buffer)
+            imagem_bytes = buffer.getvalue()
+
+            # Armazena a imagem no banco de dados
+            self.cursor.execute("INSERT INTO qrcodes (imagem) VALUES (%s)", (imagem_bytes,))
+            self.conexao.commit()
+
+        except Exception as e:
+            print(f"Erro ao gerar e armazenar o QR code: {e}")
 
     def carregar_imagem(self):
         try:
             # Recupera a imagem do banco de dados
-            self.cursor.execute("SELECT imagem FROM qrcodes WHERE id = 1")  # Substitua 1 pelo ID desejado
+            self.cursor.execute("SELECT imagem FROM qrcodes ORDER BY id DESC LIMIT 1")
             imagem_bytes = self.cursor.fetchone()[0]
 
             # Converte os bytes da imagem para QPixmap

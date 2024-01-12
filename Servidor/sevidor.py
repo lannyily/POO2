@@ -2,6 +2,7 @@ import threading
 import socket
 import mysql.connector as mysql
 import re
+import datetime
 
 conexao = mysql.connect(
     host='localhost', database='turismo', user='root', passwd='amor2004')
@@ -24,10 +25,8 @@ class ClienteThread(threading.Thread):
         
         if tipo_usuario == 'cliente':
             self.run_cliente()
-        elif tipo_usuario == 'admin':
-            pass
         elif tipo_usuario == 'funcionario':
-            pass
+            self.run_funcionario()
         elif tipo_usuario == 'sair':
             print('O Usuário solicitou sair. Fechando a conexão...')
             self.csocket.send("Desconectado pelo servidor".encode('utf-8'))
@@ -35,7 +34,39 @@ class ClienteThread(threading.Thread):
         else:
             print(f'Tipo de usuário não reconhecido: {tipo_usuario}')
             self.csocket.close()
-
+    
+    def run_funcionario(self):
+        try:
+            while True:
+                data = self.csocket.recv(1024).decode()
+                print('Aguardando operação...')
+                operacao, *dados = data.split(';')
+                print('Aguardando operação...')
+                dados = ';'.join(dados)
+                print('Operação externa:', operacao)
+                print('Dados:', dados)
+                
+                if operacao == 'sair':
+                    print('Cliente solicitou sair. Fechando a conexão...')
+                    self.csocket.send("Desconectado pelo servidor".encode('utf-8'))
+                    self.csocket.close()
+                    break
+                
+                elif operacao == 'loginadmin':
+                    print('Verificando senha...')
+                    if self.verificar_senha_admin(dados):
+                        self.csocket.send("Login efetuado com sucesso".encode('utf-8'))
+                        print('O administrador se conectou!')
+                    else:
+                        self.csocket.send("Senha incorreta".encode('utf-8'))
+                        print('Senha incorreta. Tente novamente.')
+                else:
+                    print('Operação não reconhecida:', operacao)
+        except Exception as e:
+            print(f"Erro durante a execução da thread: {e}")
+        finally:
+            self.csocket.close()
+    
     def run_cliente(self):
         try:
             while True:
@@ -116,6 +147,11 @@ class ClienteThread(threading.Thread):
                         self.csocket.send("CPF invalido".encode('utf-8'))
                         return False
                     
+                    if not self.verificar_maioridade(dataN):
+                        print('Menor de idade')
+                        self.csocket.send("Menor de idade".encode('utf-8'))
+                        return False
+                    
                     sucesso = self.cadastrar_novo_usuario(nome, cpf, dataN, email, senha)
                     print(sucesso)
                     if sucesso == True:
@@ -145,7 +181,6 @@ class ClienteThread(threading.Thread):
                 self.csocket.send("Conta excluida com sucesso!".encode('utf-8'))
         except Exception as e:
             print(f"Erro durante a exclusão da conta: {e}")
-    
     
     def verificar_usuario_senha(self, dados):
         while True:
@@ -251,7 +286,35 @@ class ClienteThread(threading.Thread):
         finally:
             self.csocket.close()
 
+    def verificar_maioridade(data_nascimento):
+        data_nascimento = datetime.strptime(data_nascimento, '%d-%m-%Y')
+        data_atual = datetime.now()
+        idade = data_atual.year - data_nascimento.year - ((data_atual.month, data_atual.day) < (data_nascimento.month, data_nascimento.day))
 
+        if idade >= 18:
+            return True
+        else:
+            return False
+        
+    def verificar_senha_admin(self, dados):
+        while True:
+            senha = dados.split(';')[0]
+            try:
+                with conexao.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT * FROM senha_admin WHERE senha = %s", (senha,))
+                    resultado = cursor.fetchone()
+                if resultado:
+                    print(resultado)
+                    return True
+                else:
+                    return False
+            except mysql.Error as err:
+                print(f"Erro ao acessar o banco de dados: {err}")
+                erro_str = f"Erro ao acessar o banco de dados: {str(err)}"
+                self.csocket.send(erro_str.encode('utf-8'))
+                return False
+        
 if __name__ == '__main__':
     localhost = ''
     port = 1600
