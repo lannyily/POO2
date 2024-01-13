@@ -3,6 +3,7 @@ import socket
 import mysql.connector as mysql
 import re
 import datetime
+import json
 
 conexao = mysql.connect(
     host='localhost', database='turismo', user='root', passwd='amor2004')
@@ -47,9 +48,7 @@ class ClienteThread(threading.Thread):
                 print('Dados:', dados)
                 
                 if operacao == 'sair':
-                    print('Cliente solicitou sair. Fechando a conexão...')
-                    self.csocket.send("Desconectado pelo servidor".encode('utf-8'))
-                    self.csocket.close()
+                    self.sair()
                     break
                 
                 elif operacao == 'loginadmin':
@@ -57,6 +56,93 @@ class ClienteThread(threading.Thread):
                     if self.verificar_senha_admin(dados):
                         self.csocket.send("Login efetuado com sucesso".encode('utf-8'))
                         print('O administrador se conectou!')
+                        
+                        while True:
+                            data_operacao = self.csocket.recv(1024).decode('utf-8')
+                            operacao, *dados_operacao = data_operacao.split(';')
+                            dados_operacao = ';'.join(dados_operacao)
+                            print('Operação dentro do login:', operacao)
+                            print('Dados:', dados_operacao)
+                            
+                            if operacao == 'sair':
+                                self.sair()
+                                break
+                            
+                            if operacao == 'autenticar':
+                                if self.verificar_senha_admin(dados_operacao):
+                                    senha_antiga = dados_operacao.split(';')[0]
+                                    self.csocket.send("Login efetuado com sucesso".encode('utf-8'))
+                                    print('Agora o administrador pode mudar a senha!')
+                                    
+                                    data_operacao = self.csocket.recv(1024).decode('utf-8')
+                                    operacao, *dado = data_operacao.split(';')
+                                    dado = ';'.join(dado)
+                                    print('Operação dentro do atualizar senha:', operacao)
+                                    print('Dados:', dado)
+                                    
+                                    if operacao == 'atualizar':
+                                        print(f'Senha antiga: {senha_antiga}')
+                                        print(f'Senha nova: {dado}')
+                                        if self.atualizar_senha_admin(dado, senha_antiga):
+                                            self.csocket.send("Senha atualizada com sucesso!".encode('utf-8'))
+                                        else:
+                                            self.csocket.send("Erro ao atualizar a senha".encode('utf-8'))
+                                    else:
+                                        print('Operação não reconhecida:', operacao)
+                                else:
+                                    self.csocket.send("Senha incorreta".encode('utf-8'))
+                                    print('Senha incorreta. Tente novamente.')
+                            elif operacao == 'listarusuarios':
+                                self.listar_usuarios()
+                                print('Listando usuários...')
+                                while True:
+                                    operacao_data = self.csocket.recv(1024).decode('utf-8')
+                                    operacao_data, *dados = operacao_data.split(';')
+                                    dados = ';'.join(dados)
+                                    print('Operação dentro de listar:', operacao_data)
+                                    print('Dados:', dados)
+                                
+                                    if operacao_data == 'sair':
+                                        self.sair()
+                                        break
+                                
+                                    if operacao_data == 'busca':
+                                        print('Buscando usuário...')
+                                        resultado = self.buscar_nome_por_email(dados)
+                                        email = dados.split(';')[0]
+                                        if resultado:
+                                            self.csocket.send(resultado[0].encode('utf-8'))
+                                            
+                                            while True:
+                                                operacao_usuario = self.csocket.recv(1024).decode('utf-8')
+                                                operacao_usuario, *dado = operacao_usuario.split(';')
+                                                dado = ';'.join(dado)
+                                                print('Operação dentro do usuario:', operacao_usuario)
+                                                print('Dados:', dado)
+                                                
+                                                if operacao_usuario == 'mostarconta':
+                                                    self.mostrar_usuario(email)
+                                                    
+                                                    while True:
+                                                        operacao_user = self.csocket.recv(1024).decode('utf-8')
+                                                        operacao_user, *dad = operacao_user.split(';')
+                                                        dad = ';'.join(dad)
+                                                        print('Operação dentro do user:', operacao_user)
+                                                        print('Dados:', dad)
+                                                        
+                                                        if operacao_user == 'excluir':
+                                                                print('Senha correta. Excluindo conta...')
+                                                                self.excluir_conta(email)
+                                                                self.csocket.send("conta excluida com sucesso".encode('utf-8'))
+                                                                break
+                                                        else:
+                                                            print('Operação não reconhecida:', operacao_user)
+                                                else:
+                                                    print('Operação não reconhecida:', operacao_usuario)
+                                        else:
+                                            print('Erro ao realizar busca')
+                                    else:
+                                        print('Operação não reconhecida:', operacao_data)
                     else:
                         self.csocket.send("Senha incorreta".encode('utf-8'))
                         print('Senha incorreta. Tente novamente.')
@@ -77,9 +163,7 @@ class ClienteThread(threading.Thread):
                 print('Dados:', dados)
 
                 if operacao == 'sair':
-                    print('Cliente solicitou sair. Fechando a conexão...')
-                    self.csocket.send("Desconectado pelo servidor".encode('utf-8'))
-                    self.csocket.close()
+                    self.sair()
                     break
 
                 elif operacao == 'login':
@@ -95,9 +179,7 @@ class ClienteThread(threading.Thread):
                             print('Dados:', dados_operacao)
                             
                             if operacao == 'sair':
-                                print('Cliente solicitou sair. Fechando a conexão...')
-                                self.csocket.send("Desconectado pelo servidor".encode('utf-8'))
-                                self.csocket.close()
+                                self.sair()
                                 break
                             
                             if operacao == 'busca':
@@ -106,22 +188,24 @@ class ClienteThread(threading.Thread):
                                 print("Realizando busca...")
                                 resultado = self.busca(email_busca)
                                 
-                            
-                                data_operacao = self.csocket.recv(1024).decode('utf-8')
-                                operacao, *dados_operacao = data_operacao.split(';')
-                                dados_operacao = ';'.join(dados_operacao)
-                                print('Operação dentro do perfil:', operacao)
-                                print('Dados:', dados_operacao)
+                                if resultado:
+                                    data_operacao = self.csocket.recv(1024).decode('utf-8')
+                                    operacao, *dados_operacao = data_operacao.split(';')
+                                    dados_operacao = ';'.join(dados_operacao)
+                                    print('Operação dentro do perfil:', operacao)
+                                    print('Dados:', dados_operacao)
                                     
-                                if operacao == 'excluir':
-                                    print('Excluindo conta...')
-                                    if self.verificar_usuario_senha(dados_operacao):
-                                        self.excluir_conta(email_busca)
-                                        break
+                                    if operacao == 'excluir':
+                                        print('Excluindo conta...')
+                                        if self.verificar_usuario_senha(dados_operacao):
+                                            self.excluir_conta(email_busca)
+                                            break
+                                        else:
+                                            self.csocket.send("Senha incorreta".encode('utf-8'))
                                     else:
-                                        self.csocket.send("Senha incorreta".encode('utf-8'))
+                                        print('Operação não reconhecida:', operacao)
                                 else:
-                                    print('Operação não reconhecida:', operacao)
+                                    print('Erro ao realizar busca')
                             else:
                                 print('Operação não reconhecida:', operacao)
 
@@ -300,10 +384,12 @@ class ClienteThread(threading.Thread):
         while True:
             senha = dados.split(';')[0]
             try:
-                with conexao.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT * FROM senha_admin WHERE senha = %s", (senha,))
-                    resultado = cursor.fetchone()
+                conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+                cursor = conexao.cursor()
+                cursor.execute(
+                    "SELECT * FROM senha_admin WHERE senha = %s", (senha,))
+                resultado = cursor.fetchone()
                 if resultado:
                     print(resultado)
                     return True
@@ -314,6 +400,94 @@ class ClienteThread(threading.Thread):
                 erro_str = f"Erro ao acessar o banco de dados: {str(err)}"
                 self.csocket.send(erro_str.encode('utf-8'))
                 return False
+
+    def atualizar_senha_admin(self, dados, senha_antiga):
+        try:
+            senha = dados.split(';')[0]
+
+            with conexao.cursor() as cursor:
+                cursor.execute(
+                    "SELECT * FROM senha_admin WHERE senha = %s", (senha_antiga,))
+                achei = cursor.fetchone()
+
+                if achei:
+                    cursor.execute(
+                        "UPDATE senha_admin SET senha = %s WHERE senha = %s", (senha, senha_antiga))
+                    conexao.commit()
+                    
+                    self.csocket.send("Senha atualizada com sucesso.".encode('utf-8'))
+                    return True
+                else:
+                    self.csocket.send("Senha antiga incorreta.".encode('utf-8'))
+                    return False
+
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            erro_str = f"Erro ao acessar o banco de dados: {str(err)}"
+            self.csocket.send(erro_str.encode('utf-8'))
+            return False
+
+        finally:
+            conexao.close()
+
+    def listar_usuarios(self):
+        try:
+            with conexao.cursor() as cursor:
+                cursor.execute("SELECT * FROM contas")
+                resultado = cursor.fetchall()
+
+                json_resultado = json.dumps(resultado)
+                self.csocket.send(json_resultado.encode('utf-8'))
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        finally:
+            conexao.close()
+            
+    def mostrar_usuario(self, dado):
+        try:
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()   
+            cursor.execute("SELECT * FROM contas WHERE email = %s", (dado,))
+            resultado = cursor.fetchone()
+            json_resultado = json.dumps(resultado)
+            self.csocket.send(json_resultado.encode('utf-8'))
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        finally:
+            conexao.close()
+
+    def buscar_nome_por_email(self, dados):
+        try:
+            email = dados.split(';')[0]
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT nome FROM contas WHERE email = %s", (email,))
+            resultado = cursor.fetchone()
+            return resultado
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        finally:
+            conexao.close()   
+        
+    def excluir_conta(self, email):
+        try:
+            conexao = mysql.connect(
+              host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("DELETE FROM contas WHERE email = %s", (email,))
+            conexao.commit()
+        except Exception as e:
+            print(f"Erro durante a exclusão da conta: {e}")
+        
+    def sair(self):
+        print('Cliente solicitou sair. Fechando a conexão...')
+        self.csocket.send("Desconectado pelo servidor".encode('utf-8'))
+        self.csocket.close()
         
 if __name__ == '__main__':
     localhost = ''

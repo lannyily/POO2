@@ -111,6 +111,11 @@
     </property>
     <column>
      <property name="text">
+      <string>ID</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
       <string>Nome</string>
      </property>
     </column>
@@ -127,6 +132,11 @@
     <column>
      <property name="text">
       <string>Email</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Senha</string>
      </property>
     </column>
    </widget>

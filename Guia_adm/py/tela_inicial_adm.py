@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_tela_inicial_adm(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(362, 460)
+        MainWindow.resize(362, 502)
         MainWindow.setStyleSheet("background-color: rgb(223, 223, 223);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -69,7 +69,7 @@ class Ui_tela_inicial_adm(object):
 "        }")
         self.pushButton_redefinir_senha.setObjectName("pushButton_redefinir_senha")
         self.splitter = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter.setGeometry(QtCore.QRect(80, 130, 211, 281))
+        self.splitter.setGeometry(QtCore.QRect(70, 120, 211, 321))
         self.splitter.setOrientation(QtCore.Qt.Vertical)
         self.splitter.setObjectName("splitter")
         self.layoutWidget = QtWidgets.QWidget(self.splitter)
@@ -96,6 +96,25 @@ class Ui_tela_inicial_adm(object):
 "        }")
         self.pushButton_usuarios.setObjectName("pushButton_usuarios")
         self.verticalLayout.addWidget(self.pushButton_usuarios)
+        self.pushButton_hoteis_2 = QtWidgets.QPushButton(self.layoutWidget)
+        self.pushButton_hoteis_2.setStyleSheet("QPushButton {\n"
+"           background-color: #4CAF50;\n"
+"           border: none;\n"
+"           color: white;\n"
+"           padding: 10px 20px;\n"
+"           text-align: center;\n"
+"           text-decoration: none;\n"
+"           display: inline-block;\n"
+"           font-size: 16px;\n"
+"           margin: 4px 2px;\n"
+"           cursor: pointer;\n"
+"           border-radius: 8px;\n"
+"        }\n"
+"        QPushButton:hover {\n"
+"           background-color: #45a049;\n"
+"        }")
+        self.pushButton_hoteis_2.setObjectName("pushButton_hoteis_2")
+        self.verticalLayout.addWidget(self.pushButton_hoteis_2)
         self.pushButton_restaurantes = QtWidgets.QPushButton(self.layoutWidget)
         self.pushButton_restaurantes.setStyleSheet("QPushButton {\n"
 "           background-color: #4CAF50;\n"
@@ -115,8 +134,8 @@ class Ui_tela_inicial_adm(object):
 "        }")
         self.pushButton_restaurantes.setObjectName("pushButton_restaurantes")
         self.verticalLayout.addWidget(self.pushButton_restaurantes)
-        self.pushButton_hoteis = QtWidgets.QPushButton(self.layoutWidget)
-        self.pushButton_hoteis.setStyleSheet("QPushButton {\n"
+        self.pushButton_monumentos = QtWidgets.QPushButton(self.layoutWidget)
+        self.pushButton_monumentos.setStyleSheet("QPushButton {\n"
 "           background-color: #4CAF50;\n"
 "           border: none;\n"
 "           color: white;\n"
@@ -132,8 +151,8 @@ class Ui_tela_inicial_adm(object):
 "        QPushButton:hover {\n"
 "           background-color: #45a049;\n"
 "        }")
-        self.pushButton_hoteis.setObjectName("pushButton_hoteis")
-        self.verticalLayout.addWidget(self.pushButton_hoteis)
+        self.pushButton_monumentos.setObjectName("pushButton_monumentos")
+        self.verticalLayout.addWidget(self.pushButton_monumentos)
         self.pushButton_excussoes = QtWidgets.QPushButton(self.layoutWidget)
         self.pushButton_excussoes.setStyleSheet("QPushButton {\n"
 "           background-color: #4CAF50;\n"
@@ -190,8 +209,9 @@ class Ui_tela_inicial_adm(object):
         self.pushButton_sair.setText(_translate("MainWindow", "Sair"))
         self.pushButton_redefinir_senha.setText(_translate("MainWindow", "Redefinir senha"))
         self.pushButton_usuarios.setText(_translate("MainWindow", "Usuários"))
+        self.pushButton_hoteis_2.setText(_translate("MainWindow", "Hotéis "))
         self.pushButton_restaurantes.setText(_translate("MainWindow", "Restaurantes "))
-        self.pushButton_hoteis.setText(_translate("MainWindow", "Hotéis "))
+        self.pushButton_monumentos.setText(_translate("MainWindow", "Monumentos"))
         self.pushButton_excussoes.setText(_translate("MainWindow", "Excussões "))
         self.pushButton_ingressos.setText(_translate("MainWindow", "Ingressos"))
 

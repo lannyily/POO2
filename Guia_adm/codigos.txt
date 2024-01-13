@@ -9,3 +9,7 @@ self.label.setPixmap(QtGui.QPixmap("Guia_adm/imagens/logo.png"))
 --- tela confirmar com senha --- Ui_tela_conf_com_senha
 
 --- tela atualizar senha --- Ui_tela_atualizar_senha
+
+--- tela usuários --- Ui_tela_usuarios
+
+--- tela excluir conta e ver usuário --- Ui_tela_excluir_conta
