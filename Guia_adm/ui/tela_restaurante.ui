@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>789</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>761</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 85, 0);</string>
+    </property>
+    <widget class="QPushButton" name="pushButton_sair">
+     <property name="geometry">
+      <rect>
+       <x>650</x>
+       <y>20</y>
+       <width>93</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+           
+	
+	
+	background-color: rgb(238, 255, 254);
+           border: none;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 15px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+          
+	
+	background-color: rgb(255, 255, 255);
+        }</string>
+     </property>
+     <property name="text">
+      <string>Sair</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_voltar">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>20</y>
+       <width>93</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+           
+	
+	
+	background-color: rgb(238, 255, 254);
+           border: none;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 15px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+          
+	
+	background-color: rgb(255, 255, 255);
+        }</string>
+     </property>
+     <property name="text">
+      <string>Voltar</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>110</y>
+      <width>511</width>
+      <height>411</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>ID</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Nome</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Endereço</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Estacionamento</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Refeição no local</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Delivery</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QPushButton" name="pushButton_add_hotel">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>120</y>
+      <width>201</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+           background-color: #4CAF50;
+           border: none;
+           color: white;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 14px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           background-color: #45a049;
+        }</string>
+    </property>
+    <property name="text">
+     <string>Adicionar Restaurante</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_excluir_hotel">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>180</y>
+      <width>201</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+           
+	background-color: rgb(255, 0, 0);
+           border: none;
+           color: white;
+           padding: 10px 20px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
+           font-size: 14px;
+           margin: 4px 2px;
+           cursor: pointer;
+           border-radius: 8px;
+        }
+        QPushButton:hover {
+           
+	
+	background-color: rgb(195, 0, 0);
+        }</string>
+    </property>
+    <property name="text">
+     <string>Excluir Restaurante</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>789</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

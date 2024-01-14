@@ -15,6 +15,10 @@ from py.tela_conf_com_senha import Ui_tela_conf_com_senha
 from py.tela_atualizar_senha import Ui_tela_atualizar_senha
 from py.tela_usuarios import Ui_tela_usuarios
 from py.tela_excluir_conta import Ui_tela_excluir_conta
+from py.tela_hoteis import Ui_tela_hoteis
+from py.tela_restaurante import Ui_tela_restaurante
+from py.tela_novo_hotel import Ui_tela_novo_hotel
+from py.tela_excluir_hotel import Ui_tela_excluir_hotel
 
 class Ui_Main(QtWidgets.QWidget):
     def setupUi(self, Main):
@@ -30,6 +34,10 @@ class Ui_Main(QtWidgets.QWidget):
         self.stack4 = QtWidgets.QMainWindow()
         self.stack5 = QtWidgets.QMainWindow()
         self.stack6 = QtWidgets.QMainWindow()
+        self.stack7 = QtWidgets.QMainWindow()
+        self.stack8 = QtWidgets.QMainWindow()
+        self.stack9 = QtWidgets.QMainWindow()
+        self.stack10 = QtWidgets.QMainWindow()
         
         self.tela_login_guia = Ui_tela_login_guia()
         self.tela_login_guia.setupUi(self.stack0)
@@ -52,6 +60,18 @@ class Ui_Main(QtWidgets.QWidget):
         self.tela_excluir_conta = Ui_tela_excluir_conta()
         self.tela_excluir_conta.setupUi(self.stack6)
         
+        self.tela_hoteis = Ui_tela_hoteis()
+        self.tela_hoteis.setupUi(self.stack7)
+        
+        self.tela_restaurante = Ui_tela_restaurante()
+        self.tela_restaurante.setupUi(self.stack8)
+        
+        self.tela_novo_hotel = Ui_tela_novo_hotel()
+        self.tela_novo_hotel.setupUi(self.stack9)
+        
+        self.tela_excluir_hotel = Ui_tela_excluir_hotel()
+        self.tela_excluir_hotel.setupUi(self.stack10)
+        
         self.QtStack.addWidget(self.stack0)
         self.QtStack.addWidget(self.stack1)
         self.QtStack.addWidget(self.stack2)
@@ -59,6 +79,10 @@ class Ui_Main(QtWidgets.QWidget):
         self.QtStack.addWidget(self.stack4)
         self.QtStack.addWidget(self.stack5)
         self.QtStack.addWidget(self.stack6)
+        self.QtStack.addWidget(self.stack7)
+        self.QtStack.addWidget(self.stack8)
+        self.QtStack.addWidget(self.stack9)
+        self.QtStack.addWidget(self.stack10)
         
 class Main(Ui_Main, QMainWindow):
     def __init__(self, parent=None):
@@ -86,6 +110,16 @@ class Main(Ui_Main, QMainWindow):
         self.tela_inicial_admin.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_inicial_admin.pushButton_redefinir_senha.clicked.connect(self.abrir_tela_conf_com_senha)
         self.tela_inicial_admin.pushButton_usuarios.clicked.connect(self.listar_usuarios)
+        self.tela_inicial_admin.pushButton_hoteis_2.clicked.connect(self.listar_hoteis)
+        
+        self.tela_hoteis.pushButton_sair.clicked.connect(self.sair_do_sistema)
+        self.tela_hoteis.pushButton_voltar.clicked.connect(self.abrir_tela_inicial_admin)
+        self.tela_hoteis.pushButton_add_hotel.clicked.connect(self.abrir_tela_novo_hotel)
+        self.tela_hoteis.pushButton_excluir_hotel.clicked.connect(self.abrir_tela_excluir_hotel)
+        
+        self.tela_novo_hotel.pushButton_voltar_2.clicked.connect(self.abrir_tela_hoteis)
+        self.tela_novo_hotel.pushButton_sair_2.clicked.connect(self.sair_do_sistema)
+        self.tela_novo_hotel.pushButton_add_hotel.clicked.connect(self.add_hotel)
         
         self.tela_usuarios.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_usuarios.pushButton_voltar.clicked.connect(self.abrir_tela_inicial_admin)
@@ -101,7 +135,6 @@ class Main(Ui_Main, QMainWindow):
         self.tela_atualizar_senha.pushButton.clicked.connect(self.nova_senha)
         self.tela_atualizar_senha.pushButton_2.clicked.connect(self.abrir_tela_inicial_admin)
         
-    
     def sair(self):
         msg = 'sair'
         self.cliente_socket.send(msg.encode())
@@ -323,7 +356,79 @@ class Main(Ui_Main, QMainWindow):
         else:
             self.mostrar_mensagem_erro('Erro ao excluir conta')
             self.abrir_tela_usuarios()
-                                  
+    
+    def listar_hoteis(self):
+        self.abrir_tela_hoteis()
+        mensagem = 'listarhoteis'
+        self.cliente_socket.send(mensagem.encode())
+        print(f'Mensagem enviada para o servidor: {mensagem}')
+        
+        resposta = self.cliente_socket.recv(1024).decode()
+        resposta = json.loads(resposta)
+        print(f'Resposta do servidor: {resposta}')
+        
+        self.tela_hoteis.tableWidget.setRowCount(len(resposta))
+        self.tela_hoteis.tableWidget.setColumnCount(6)
+        for i in range(0, len(resposta)):
+            for j in range(0, 6):
+                self.tela_hoteis.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(resposta[i][j])))
+             
+    def add_hotel(self):
+        while True:
+            nome = self.tela_novo_hotel.lineEdit_nome.text()
+            endereco = self.tela_novo_hotel.lineEdit_endereco.text()
+            if self.tela_novo_hotel.radioButton_esta_sim.isChecked():
+                estacionamento = 'SIM'
+            elif self.tela_novo_hotel.radioButton_esta_nao.isChecked():
+                estacionamento = 'NAO'
+            if self.tela_novo_hotel.radioButton_piscina_sim.isChecked():
+                piscina = 'SIM'
+            elif self.tela_novo_hotel.radioButton_piscina_nao.isChecked():
+                piscina = 'NAO'
+            link = self.tela_novo_hotel.lineEdit_endereco_2.text()
+            
+            if nome and endereco and estacionamento and piscina and link:
+                try:
+                    mensagem = f'addhotel;{nome};{endereco};{estacionamento};{piscina};{link}'
+                    self.cliente_socket.send(mensagem.encode())
+                    print(f'Mensagem enviada para o servidor: {mensagem}')
+                    
+                    resposta = self.cliente_socket.recv(1024).decode()
+                    print(f'Resposta do servidor: {resposta}')
+                    
+                    if resposta.lower() == 'sim':
+                        self.mostrar_mensagem_aviso('Hotel adicionado com sucesso')
+                        self.tela_novo_hotel.lineEdit_nome.setText('')
+                        self.tela_novo_hotel.lineEdit_endereco.setText('')
+                        self.tela_novo_hotel.lineEdit_endereco_2.setText('')
+                        estacionamento = ''
+                        piscina = ''
+                        self.abrir_tela_hoteis()
+                        break
+                    elif resposta.lower() == 'nome':
+                        self.mostrar_mensagem_aviso('Nome já cadastrado. Não é possível criar a conta')
+                        self.tela_novo_hotel.lineEdit_nome.setText('')
+                    elif resposta.lower() == 'endereco':
+                        self.mostrar_mensagem_aviso('Endereço já cadastrado. Não é possível criar a conta')
+                        self.tela_novo_hotel.lineEdit_endereco.setText('')
+                    else:
+                        self.mostrar_mensagem_erro('Erro ao adicionar hotel')
+                        self.tela_novo_hotel.lineEdit_nome.setText('')
+                        self.tela_novo_hotel.lineEdit_endereco.setText('')
+                        self.tela_novo_hotel.lineEdit_endereco_2.setText('')
+                        estacionamento = ''
+                        piscina = ''
+                        self.abrir_tela_hoteis()
+                        break
+                except ConnectionResetError:
+                    print("Conexão com o servidor foi perdida.")
+                    self.mostrar_mensagem_erro("Conexão com o servidor foi perdida.")
+                    self.sair()
+                except Exception as e:
+                    print(f"Erro ao conectar com o servidor: {e}")
+                    self.mostrar_mensagem_erro("Erro ao conectar com o servidor. Verifique sua conexão.")
+                 
+                  
     def abrir_tela_login_guia(self):
         self.QtStack.setCurrentIndex(0)  
         
@@ -356,6 +461,19 @@ class Main(Ui_Main, QMainWindow):
         
     def abrir_tela_excluir_conta(self):
         self.stack6.show()
+        
+    def abrir_tela_hoteis(self):
+        self.stack10.close()
+        self.QtStack.setCurrentIndex(7)
+        
+    def abrir_tela_restaurante(self):
+        self.QtStack.setCurrentIndex(8)
+        
+    def abrir_tela_novo_hotel(self):
+        self.QtStack.setCurrentIndex(9)
+        
+    def abrir_tela_excluir_hotel(self):
+        self.stack10.show()
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)

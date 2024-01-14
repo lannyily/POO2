@@ -143,7 +143,40 @@ class ClienteThread(threading.Thread):
                                             print('Erro ao realizar busca')
                                     else:
                                         print('Operação não reconhecida:', operacao_data)
-                    else:
+                            elif operacao == 'listarhoteis':
+                                self.listar_hoteis()
+                                while True:
+                                    operacao_hoteis = self.csocket.recv(1024).decode('utf-8')
+                                    operacao_hoteis, *dados_hotel = operacao_hoteis.split(';')
+                                    dados_hotel = ';'.join(dados_hotel)
+                                    print('Operação dentro de listar:', operacao_hoteis)
+                                    print('Dados:', dados_hotel)
+                                    
+                                    if operacao_hoteis == 'sair':
+                                        self.sair()
+                                        break
+                                    
+                                    if operacao_hoteis == 'addhotel':
+                                        nome, endereco, entacionamento, piscina, link = dados_hotel.split(';')
+                                        
+                                        sucesso = self.cadastrar_novo_hotel(nome, endereco, entacionamento, piscina, link)
+                                        print(sucesso)
+                                        if sucesso == True:
+                                            print(f'{nome} esta cadastrado no sistema!')
+                                            self.csocket.send("sim".encode('utf-8'))
+                                            return
+                                        elif sucesso == nome:
+                                            print('Nome já cadastrado. Não é possível criar a conta')
+                                            self.csocket.send("nome".encode('utf-8'))
+                                        elif sucesso == endereco:
+                                            print('Endereco já cadastrado. Não é possível criar a conta')
+                                            self.csocket.send("endereco".encode('utf-8'))
+                                        else:
+                                            print('Erro ao adicionar hotel')
+                                    else:
+                                        print('Operação não reconhecida:', operacao_hoteis)
+                                                 
+                    else:  
                         self.csocket.send("Senha incorreta".encode('utf-8'))
                         print('Senha incorreta. Tente novamente.')
                 else:
@@ -444,6 +477,20 @@ class ClienteThread(threading.Thread):
         finally:
             conexao.close()
             
+    def listar_hoteis(self):
+        try:
+            with conexao.cursor() as cursor:
+                cursor.execute("SELECT * FROM hoteis")
+                resultado = cursor.fetchall()
+
+                json_resultado = json.dumps(resultado)
+                self.csocket.send(json_resultado.encode('utf-8'))
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        finally:
+            conexao.close()
+            
     def mostrar_usuario(self, dado):
         try:
             conexao = mysql.connect(
@@ -483,6 +530,38 @@ class ClienteThread(threading.Thread):
             conexao.commit()
         except Exception as e:
             print(f"Erro durante a exclusão da conta: {e}")
+    
+    def cadastrar_novo_hotel(self, nome, endereco, estacionamento, piscina, link):
+        try:
+            conexao = mysql.connect(
+              host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT * FROM hoteis WHERE nome = %s OR endereco = %s", (nome, endereco))
+            existing_hotel = cursor.fetchone()
+            if existing_hotel:
+                nome_db, endereco_db = existing_hotel[1], existing_hotel[2]
+                if nome_db == nome:
+                    print('Encontrou o nome no banco de dados')
+                    print(nome_db)
+                    return nome_db
+                elif endereco_db == endereco:
+                    print('Encontrou o endereco no banco de dados')
+                    print(endereco_db)
+                    return endereco_db
+            else:
+                cursor.execute("INSERT INTO hoteis (nome, endereco, estacionamento, piscina, linkInstagram) VALUES (%s, %s, %s, %s, %s)",
+                        (nome, endereco, estacionamento, piscina, link))
+
+                conexao.commit()
+                return True
+        except mysql.Error as err:
+            mensagem_erro = f"Erro ao acessar o banco de dados: {err}"
+            print(mensagem_erro)
+            return False
+        except Exception as e:
+            mensagem_erro = f"Erro durante o cadastro: {e}"
+            print(mensagem_erro)
+            return False
         
     def sair(self):
         print('Cliente solicitou sair. Fechando a conexão...')
