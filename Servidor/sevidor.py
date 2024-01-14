@@ -57,125 +57,201 @@ class ClienteThread(threading.Thread):
                         self.csocket.send("Login efetuado com sucesso".encode('utf-8'))
                         print('O administrador se conectou!')
                         
-                        while True:
-                            data_operacao = self.csocket.recv(1024).decode('utf-8')
-                            operacao, *dados_operacao = data_operacao.split(';')
-                            dados_operacao = ';'.join(dados_operacao)
-                            print('Operação dentro do login:', operacao)
-                            print('Dados:', dados_operacao)
+                        #while True:
+                        data_operacao = self.csocket.recv(1024).decode('utf-8')
+                        operacao, *dados_operacao = data_operacao.split(';')
+                        dados_operacao = ';'.join(dados_operacao)
+                        print('Operação dentro do login:', operacao)
+                        print('Dados:', dados_operacao)
                             
-                            if operacao == 'sair':
+                        if operacao == 'sair':
+                            self.sair()
+                            break
+                            
+                        if operacao == 'autenticar':
+                            if self.verificar_senha_admin(dados_operacao):
+                                senha_antiga = dados_operacao.split(';')[0]
+                                self.csocket.send("Login efetuado com sucesso".encode('utf-8'))
+                                print('Agora o administrador pode mudar a senha!')
+                                    
+                                data_operacao = self.csocket.recv(1024).decode('utf-8')
+                                operacao, *dado = data_operacao.split(';')
+                                dado = ';'.join(dado)
+                                print('Operação dentro do atualizar senha:', operacao)
+                                print('Dados:', dado)
+                                    
+                                if operacao == 'atualizar':
+                                    print(f'Senha antiga: {senha_antiga}')
+                                    print(f'Senha nova: {dado}')
+                                    if self.atualizar_senha_admin(dado, senha_antiga):
+                                        self.csocket.send("Senha atualizada com sucesso!".encode('utf-8'))
+                                    else:
+                                        self.csocket.send("Erro ao atualizar a senha".encode('utf-8'))
+                                else:
+                                    print('Operação não reconhecida:', operacao)
+                            else:
+                                self.csocket.send("Senha incorreta".encode('utf-8'))
+                                print('Senha incorreta. Tente novamente.')
+                        elif operacao == 'listarusuarios':
+                            self.listar_usuarios()
+                            print('Listando usuários...')
+                            while True:
+                                operacao_data = self.csocket.recv(1024).decode('utf-8')
+                                operacao_data, *dados = operacao_data.split(';')
+                                dados = ';'.join(dados)
+                                print('Operação dentro de listar:', operacao_data)
+                                print('Dados:', dados)
+                                
+                                if operacao_data == 'sair':
+                                    self.sair()
+                                    break
+                                
+                                if operacao_data == 'busca':
+                                    print('Buscando usuário...')
+                                    resultado = self.buscar_nome_por_email(dados)
+                                    email = dados.split(';')[0]
+                                    if resultado:
+                                        self.csocket.send(resultado[0].encode('utf-8'))
+                                            
+                                        while True:
+                                            operacao_usuario = self.csocket.recv(1024).decode('utf-8')
+                                            operacao_usuario, *dado = operacao_usuario.split(';')
+                                            dado = ';'.join(dado)
+                                            print('Operação dentro do usuario:', operacao_usuario)
+                                            print('Dados:', dado)
+                                                
+                                            if operacao_usuario == 'mostarconta':
+                                                self.mostrar_usuario(email)
+                                                    
+                                                while True:
+                                                    operacao_user = self.csocket.recv(1024).decode('utf-8')
+                                                    operacao_user, *dad = operacao_user.split(';')
+                                                    dad = ';'.join(dad)
+                                                    print('Operação dentro do user:', operacao_user)
+                                                    print('Dados:', dad)
+                                                        
+                                                    if operacao_user == 'excluir':
+                                                            self.excluir_conta(email)
+                                                            self.csocket.send("conta excluida com sucesso".encode('utf-8'))
+                                                            break
+                                                    else:
+                                                        print('Operação não reconhecida:', operacao_user)
+                                            else:
+                                                print('Operação não reconhecida:', operacao_usuario)
+                                    else:
+                                        print('Erro ao realizar busca')
+                                else:
+                                    print('Operação não reconhecida:', operacao_data)
+                        elif operacao == 'listarhoteis':
+                            self.listar_hoteis()
+                            #while True:
+                            operacao_hoteis = self.csocket.recv(1024).decode('utf-8')
+                            operacao_hoteis, *dados_hotel = operacao_hoteis.split(';')
+                            dados_hotel = ';'.join(dados_hotel)
+                            print('Operação dentro de listar hoteis:', operacao_hoteis)
+                            print('Dados:', dados_hotel)
+                                    
+                            if operacao_hoteis == 'sair':
+                                self.sair()
+                                break
+                                    
+                            if operacao_hoteis == 'addhotel':
+                                nome, endereco, entacionamento, piscina, link = dados_hotel.split(';')
+                                    
+                                sucesso = self.cadastrar_novo_hotel(nome, endereco, entacionamento, piscina, link)
+                                print(sucesso)
+                                if sucesso == True:
+                                    print(f'{nome} esta cadastrado no sistema!')
+                                    self.csocket.send("sim".encode('utf-8'))
+                                    break
+                                elif sucesso == nome:
+                                    print('Nome já cadastrado. Não é possível criar a conta')
+                                    self.csocket.send("nome".encode('utf-8'))
+                                    break
+                                elif sucesso == endereco:
+                                    print('Endereco já cadastrado. Não é possível criar a conta')
+                                    self.csocket.send("endereco".encode('utf-8'))
+                                    break
+                                else:
+                                    print('Erro ao adicionar hotel')
+                            elif operacao_hoteis == 'buscahotel':
+                                hotel = self.busca_hotel(dados_hotel)
+                                self.csocket.send(hotel[0].encode('utf-8'))
+                                id_hotel = dados_hotel.split(';')[0]
+                                #while True:
+                                operacao_excluir_hotel = self.csocket.recv(1024).decode('utf-8')
+                                operacao_excluir_hotel, *dados_excluir_hotel = operacao_excluir_hotel.split(';')
+                                dados_excluir_hotel = ';'.join(dados_excluir_hotel)
+                                print('Operação dentro de excluir hotel:', operacao_excluir_hotel)
+                                print('Dados:', dados_excluir_hotel)
+                                        
+                                if operacao_excluir_hotel == 'sair':
+                                    self.sair()
+                                    break
+                                            
+                                if operacao_excluir_hotel == 'excluirhotel':
+                                    self.excluir_hotel(id_hotel)
+                                    self.csocket.send("hotel excluido com sucesso".encode('utf-8'))
+                                    break
+                                else:
+                                    print('Operação não reconhecida:', operacao_excluir_hotel)
+                            else:
+                                print('Operação não reconhecida:', operacao_hoteis)
+                         
+                        elif operacao == 'listarrestaurantes':
+                            self.listar_restaurantes()
+                            
+                            operacao_restaurantes = self.csocket.recv(1024).decode('utf-8')
+                            operacao_restaurantes, *dados_restaurante = operacao_restaurantes.split(';')
+                            dados_restaurante = ';'.join(dados_restaurante)
+                            print('Operação dentro de listar restaurantes:', operacao_restaurantes)
+                            print('Dados:', dados_restaurante)  
+                            
+                            if operacao_restaurantes == 'sair':
                                 self.sair()
                                 break
                             
-                            if operacao == 'autenticar':
-                                if self.verificar_senha_admin(dados_operacao):
-                                    senha_antiga = dados_operacao.split(';')[0]
-                                    self.csocket.send("Login efetuado com sucesso".encode('utf-8'))
-                                    print('Agora o administrador pode mudar a senha!')
-                                    
-                                    data_operacao = self.csocket.recv(1024).decode('utf-8')
-                                    operacao, *dado = data_operacao.split(';')
-                                    dado = ';'.join(dado)
-                                    print('Operação dentro do atualizar senha:', operacao)
-                                    print('Dados:', dado)
-                                    
-                                    if operacao == 'atualizar':
-                                        print(f'Senha antiga: {senha_antiga}')
-                                        print(f'Senha nova: {dado}')
-                                        if self.atualizar_senha_admin(dado, senha_antiga):
-                                            self.csocket.send("Senha atualizada com sucesso!".encode('utf-8'))
-                                        else:
-                                            self.csocket.send("Erro ao atualizar a senha".encode('utf-8'))
-                                    else:
-                                        print('Operação não reconhecida:', operacao)
+                            if operacao_restaurantes == 'addrestaurante':
+                                nome_restaurante, endereco_restaurante, estacionamento, refeicaoLocal, delivery, link_restaurante = dados_restaurante.split(';')
+                                sucesso = self.cadastrar_novo_restaurante(nome_restaurante, endereco_restaurante, estacionamento, refeicaoLocal, delivery, link_restaurante)
+                                print(sucesso)
+                                if sucesso == True:
+                                    print(f'{nome_restaurante} esta cadastrado no sistema!')
+                                    self.csocket.send("sim".encode('utf-8'))
+                                    break
+                                elif sucesso == nome_restaurante:
+                                    print('Nome já cadastrado. Não é possível criar a conta')
+                                    self.csocket.send("nome".encode('utf-8'))
+                                    break
+                                elif sucesso == endereco_restaurante:
+                                    print('Endereco já cadastrado. Não é possível criar a conta')
+                                    self.csocket.send("endereco".encode('utf-8'))
+                                    break
                                 else:
-                                    self.csocket.send("Senha incorreta".encode('utf-8'))
-                                    print('Senha incorreta. Tente novamente.')
-                            elif operacao == 'listarusuarios':
-                                self.listar_usuarios()
-                                print('Listando usuários...')
-                                while True:
-                                    operacao_data = self.csocket.recv(1024).decode('utf-8')
-                                    operacao_data, *dados = operacao_data.split(';')
-                                    dados = ';'.join(dados)
-                                    print('Operação dentro de listar:', operacao_data)
-                                    print('Dados:', dados)
+                                    print('Erro ao adicionar restaurante')
+                            elif operacao_restaurantes == 'buscarestaurante':
+                                restaurante = self.busca_restaurante(dados_restaurante)
+                                self.csocket.send(restaurante[0].encode('utf-8'))
+                                id_restaurante = dados_restaurante.split(';')[0]
                                 
-                                    if operacao_data == 'sair':
-                                        self.sair()
-                                        break
+                                operacao_excluir_restaurante = self.csocket.recv(1024).decode('utf-8')
+                                operacao_excluir_restaurante, *dados_excluir_restaurante = operacao_excluir_restaurante.split(';')
+                                dados_excluir_restaurante = ';'.join(dados_excluir_restaurante)
+                                print('Operação dentro de excluir restaurante:', operacao_excluir_restaurante)
+                                print('Dados:', dados_excluir_restaurante)
                                 
-                                    if operacao_data == 'busca':
-                                        print('Buscando usuário...')
-                                        resultado = self.buscar_nome_por_email(dados)
-                                        email = dados.split(';')[0]
-                                        if resultado:
-                                            self.csocket.send(resultado[0].encode('utf-8'))
-                                            
-                                            while True:
-                                                operacao_usuario = self.csocket.recv(1024).decode('utf-8')
-                                                operacao_usuario, *dado = operacao_usuario.split(';')
-                                                dado = ';'.join(dado)
-                                                print('Operação dentro do usuario:', operacao_usuario)
-                                                print('Dados:', dado)
-                                                
-                                                if operacao_usuario == 'mostarconta':
-                                                    self.mostrar_usuario(email)
-                                                    
-                                                    while True:
-                                                        operacao_user = self.csocket.recv(1024).decode('utf-8')
-                                                        operacao_user, *dad = operacao_user.split(';')
-                                                        dad = ';'.join(dad)
-                                                        print('Operação dentro do user:', operacao_user)
-                                                        print('Dados:', dad)
-                                                        
-                                                        if operacao_user == 'excluir':
-                                                                print('Senha correta. Excluindo conta...')
-                                                                self.excluir_conta(email)
-                                                                self.csocket.send("conta excluida com sucesso".encode('utf-8'))
-                                                                break
-                                                        else:
-                                                            print('Operação não reconhecida:', operacao_user)
-                                                else:
-                                                    print('Operação não reconhecida:', operacao_usuario)
-                                        else:
-                                            print('Erro ao realizar busca')
-                                    else:
-                                        print('Operação não reconhecida:', operacao_data)
-                            elif operacao == 'listarhoteis':
-                                self.listar_hoteis()
-                                while True:
-                                    operacao_hoteis = self.csocket.recv(1024).decode('utf-8')
-                                    operacao_hoteis, *dados_hotel = operacao_hoteis.split(';')
-                                    dados_hotel = ';'.join(dados_hotel)
-                                    print('Operação dentro de listar:', operacao_hoteis)
-                                    print('Dados:', dados_hotel)
-                                    
-                                    if operacao_hoteis == 'sair':
-                                        self.sair()
-                                        break
-                                    
-                                    if operacao_hoteis == 'addhotel':
-                                        nome, endereco, entacionamento, piscina, link = dados_hotel.split(';')
-                                        
-                                        sucesso = self.cadastrar_novo_hotel(nome, endereco, entacionamento, piscina, link)
-                                        print(sucesso)
-                                        if sucesso == True:
-                                            print(f'{nome} esta cadastrado no sistema!')
-                                            self.csocket.send("sim".encode('utf-8'))
-                                            return
-                                        elif sucesso == nome:
-                                            print('Nome já cadastrado. Não é possível criar a conta')
-                                            self.csocket.send("nome".encode('utf-8'))
-                                        elif sucesso == endereco:
-                                            print('Endereco já cadastrado. Não é possível criar a conta')
-                                            self.csocket.send("endereco".encode('utf-8'))
-                                        else:
-                                            print('Erro ao adicionar hotel')
-                                    else:
-                                        print('Operação não reconhecida:', operacao_hoteis)
-                                                 
+                                if operacao_excluir_restaurante == 'sair':
+                                    self.sair()
+                                    break
+                                
+                                if operacao_excluir_restaurante == 'excluirrestaurante':
+                                    self.excluir_restaurante(id_restaurante)
+                                    self.csocket.send("restaurante excluido com sucesso".encode('utf-8'))
+                                    break
+                                else:
+                                    print('Operação não reconhecida:', operacao_excluir_restaurante)
+                            else:
+                                print('Operação não reconhecida:', operacao_restaurantes)            
                     else:  
                         self.csocket.send("Senha incorreta".encode('utf-8'))
                         print('Senha incorreta. Tente novamente.')
@@ -346,12 +422,10 @@ class ClienteThread(threading.Thread):
         except mysql.Error as err:
             mensagem_erro = f"Erro ao acessar o banco de dados: {err}"
             print(mensagem_erro)
-            self.csocket.send(mensagem_erro.encode('utf-8'))
             return False, "Erro na criação da conta."
         except Exception as e:
             mensagem_erro = f"Erro durante o cadastro: {e}"
             print(mensagem_erro)
-            self.csocket.send(mensagem_erro.encode('utf-8'))
             return False, "Erro na criação da conta."
 
     def validar_email(self, email):
@@ -479,18 +553,36 @@ class ClienteThread(threading.Thread):
             
     def listar_hoteis(self):
         try:
-            with conexao.cursor() as cursor:
-                cursor.execute("SELECT * FROM hoteis")
-                resultado = cursor.fetchall()
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT * FROM hoteis")
+            resultado = cursor.fetchall()
 
-                json_resultado = json.dumps(resultado)
-                self.csocket.send(json_resultado.encode('utf-8'))
+            json_resultado = json.dumps(resultado)
+            self.csocket.send(json_resultado.encode('utf-8'))
         except mysql.Error as err:
             print(f"Erro ao acessar o banco de dados: {err}")
             return False
         finally:
             conexao.close()
+    
+    def listar_restaurantes(self):
+        try:
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT * FROM restaurantes")
+            resultado = cursor.fetchall()
             
+            json_resultado = json.dumps(resultado)
+            self.csocket.send(json_resultado.encode('utf-8'))
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        finally:
+            conexao.close()
+    
     def mostrar_usuario(self, dado):
         try:
             conexao = mysql.connect(
@@ -562,6 +654,88 @@ class ClienteThread(threading.Thread):
             mensagem_erro = f"Erro durante o cadastro: {e}"
             print(mensagem_erro)
             return False
+    
+    def cadastrar_novo_restaurante(self, nome, endereco, estacionamento, refeicaoLocal, delivery, link):
+        try:
+            conexao = mysql.connect(
+              host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT * FROM restaurantes WHERE nome = %s OR endereco = %s", (nome, endereco))
+            existing_restaurante = cursor.fetchone()
+            if existing_restaurante:
+                nome_db, endereco_db = existing_restaurante[1], existing_restaurante[2]
+                if nome_db == nome:
+                    print('Encontrou o nome no banco de dados')
+                    print(nome_db)
+                    return nome_db
+                elif endereco_db == endereco:
+                    print('Encontrou o endereco no banco de dados')
+                    print(endereco_db)
+                    return endereco_db
+            else:
+                cursor.execute("INSERT INTO restaurantes (nome, endereco, estacionamento, refeiçãoLocal, delivery, linkInstagram) VALUES (%s, %s, %s, %s, %s, %s)",
+                        (nome, endereco, estacionamento, refeicaoLocal, delivery, link))
+
+                conexao.commit()
+                return True
+        except mysql.Error as err:
+            mensagem_erro = f"Erro ao acessar o banco de dados: {err}"
+            print(mensagem_erro)
+            return False
+        except Exception as e:
+            mensagem_erro = f"Erro durante o cadastro: {e}"
+            print(mensagem_erro)
+            return False
+        
+    def busca_hotel(self, dado):
+        try:
+            id = dado.split(';')[0]
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT nome FROM hoteis WHERE id = %s", (id,))
+            resultado = cursor.fetchone()
+            return resultado
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        finally:
+            conexao.close()
+    
+    def busca_restaurante(self, dado):
+        try:
+            id = dado.split(';')[0]
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT nome FROM restaurantes WHERE id = %s", (id,))
+            resultado = cursor.fetchone()
+            return resultado
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        finally:
+            conexao.close()
+    
+    def excluir_hotel(self, id):
+        try:
+            conexao = mysql.connect(
+              host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("DELETE FROM hoteis WHERE id = %s", (id,))
+            conexao.commit()
+        except Exception as e:
+            print(f"Erro durante a exclusão do hotel: {e}")
+        
+    def excluir_restaurante(self, id):
+        try:
+            conexao = mysql.connect(
+              host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("DELETE FROM restaurantes WHERE id = %s", (id,))
+            conexao.commit()
+        except Exception as e:
+            print(f"Erro durante a exclusão do restaurante: {e}")
         
     def sair(self):
         print('Cliente solicitou sair. Fechando a conexão...')

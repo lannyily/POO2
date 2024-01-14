@@ -21,3 +21,7 @@ self.label.setPixmap(QtGui.QPixmap("Guia_adm/imagens/logo.png"))
 --- tela novo hotel --- Ui_tela_novo_hotel
 
 --- tela excluir hotel --- Ui_tela_excluir_hotel 
+
+--- tela novo restaurante --- Ui_tela_novo_restaurante
+
+--- tela excluir restaurante --- Ui_tela_excluir_restaurante

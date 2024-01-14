@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1213</width>
-    <height>871</height>
+    <height>815</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>240</y>
+      <x>20</x>
+      <y>200</y>
       <width>731</width>
       <height>561</height>
      </rect>
@@ -393,10 +393,10 @@ border-radius: 7px;
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>20</y>
+      <x>20</x>
+      <y>10</y>
       <width>1141</width>
-      <height>201</height>
+      <height>171</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -406,9 +406,9 @@ border-radius: 7px;
      <property name="geometry">
       <rect>
        <x>580</x>
-       <y>30</y>
+       <y>50</y>
        <width>152</width>
-       <height>157</height>
+       <height>101</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -475,41 +475,15 @@ border-radius: 7px;
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_cultura_lazer">
-        <property name="styleSheet">
-         <string notr="true">QPushButton {
-           
-	background-color: rgb(111, 125, 255);
-           border: none;
-           color: white;
-           padding: 10px 20px;
-           text-align: center;
-           text-decoration: none;
-           display: inline-block;
-           font-size: 16px;
-           margin: 4px 2px;
-           cursor: pointer;
-           border-radius: 8px;
-        }
-        QPushButton:hover {
-           background-color: rgb(85, 170, 255); 
-        }</string>
-        </property>
-        <property name="text">
-         <string>Cultura e Lazer</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
     <widget class="QLabel" name="label_9">
      <property name="geometry">
       <rect>
-       <x>-10</x>
-       <y>-10</y>
-       <width>401</width>
-       <height>211</height>
+       <x>10</x>
+       <y>10</y>
+       <width>321</width>
+       <height>161</height>
       </rect>
      </property>
      <property name="text">
@@ -526,7 +500,7 @@ border-radius: 7px;
      <property name="geometry">
       <rect>
        <x>1000</x>
-       <y>140</y>
+       <y>120</y>
        <width>121</width>
        <height>41</height>
       </rect>
@@ -558,13 +532,13 @@ border-radius: 7px;
      <property name="geometry">
       <rect>
        <x>1020</x>
-       <y>40</y>
+       <y>30</y>
        <width>81</width>
        <height>81</height>
       </rect>
      </property>
      <property name="cursor">
-      <cursorShape>ArrowCursor</cursorShape>
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
@@ -604,8 +578,8 @@ QToolTip {
    <widget class="QScrollArea" name="scrollArea">
     <property name="geometry">
      <rect>
-      <x>780</x>
-      <y>240</y>
+      <x>770</x>
+      <y>200</y>
       <width>391</width>
       <height>561</height>
      </rect>
@@ -653,7 +627,7 @@ QToolTip {
           <bool>true</bool>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="pushButton_fe">
          <property name="geometry">
           <rect>
            <x>-10</x>
@@ -725,7 +699,7 @@ QPushButton {
           <bool>true</bool>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="pushButton_cult">
          <property name="geometry">
           <rect>
            <x>-20</x>
@@ -794,7 +768,7 @@ QPushButton {
           <bool>true</bool>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="pushButton_his">
          <property name="geometry">
           <rect>
            <x>-10</x>
@@ -839,8 +813,8 @@ QPushButton {
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>240</y>
+      <x>20</x>
+      <y>200</y>
       <width>221</width>
       <height>41</height>
      </rect>

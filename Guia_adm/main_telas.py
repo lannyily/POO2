@@ -19,6 +19,8 @@ from py.tela_hoteis import Ui_tela_hoteis
 from py.tela_restaurante import Ui_tela_restaurante
 from py.tela_novo_hotel import Ui_tela_novo_hotel
 from py.tela_excluir_hotel import Ui_tela_excluir_hotel
+from py.tela_novo_restaurante import Ui_tela_novo_restaurante
+from py.tela_excluir_restaurante import Ui_tela_excluir_restaurante
 
 class Ui_Main(QtWidgets.QWidget):
     def setupUi(self, Main):
@@ -38,6 +40,8 @@ class Ui_Main(QtWidgets.QWidget):
         self.stack8 = QtWidgets.QMainWindow()
         self.stack9 = QtWidgets.QMainWindow()
         self.stack10 = QtWidgets.QMainWindow()
+        self.stack11 = QtWidgets.QMainWindow()
+        self.stack12 = QtWidgets.QMainWindow()
         
         self.tela_login_guia = Ui_tela_login_guia()
         self.tela_login_guia.setupUi(self.stack0)
@@ -72,6 +76,12 @@ class Ui_Main(QtWidgets.QWidget):
         self.tela_excluir_hotel = Ui_tela_excluir_hotel()
         self.tela_excluir_hotel.setupUi(self.stack10)
         
+        self.tela_novo_restaurante = Ui_tela_novo_restaurante()
+        self.tela_novo_restaurante.setupUi(self.stack11)
+        
+        self.tela_excluir_restaurante = Ui_tela_excluir_restaurante()
+        self.tela_excluir_restaurante.setupUi(self.stack12)
+        
         self.QtStack.addWidget(self.stack0)
         self.QtStack.addWidget(self.stack1)
         self.QtStack.addWidget(self.stack2)
@@ -83,6 +93,8 @@ class Ui_Main(QtWidgets.QWidget):
         self.QtStack.addWidget(self.stack8)
         self.QtStack.addWidget(self.stack9)
         self.QtStack.addWidget(self.stack10)
+        self.QtStack.addWidget(self.stack11)
+        self.QtStack.addWidget(self.stack12)
         
 class Main(Ui_Main, QMainWindow):
     def __init__(self, parent=None):
@@ -111,6 +123,21 @@ class Main(Ui_Main, QMainWindow):
         self.tela_inicial_admin.pushButton_redefinir_senha.clicked.connect(self.abrir_tela_conf_com_senha)
         self.tela_inicial_admin.pushButton_usuarios.clicked.connect(self.listar_usuarios)
         self.tela_inicial_admin.pushButton_hoteis_2.clicked.connect(self.listar_hoteis)
+        self.tela_inicial_admin.pushButton_restaurantes.clicked.connect(self.listar_restaurantes)
+        
+        self.tela_restaurante.pushButton_sair.clicked.connect(self.sair_do_sistema)
+        self.tela_restaurante.pushButton_voltar.clicked.connect(self.abrir_tela_inicial_admin)
+        self.tela_restaurante.pushButton_add_hotel.clicked.connect(self.abrir_tela_novo_restaurante)
+        self.tela_restaurante.pushButton_excluir_hotel.clicked.connect(self.abrir_tela_excluir_restaurante)
+        
+        self.tela_novo_restaurante.pushButton_voltar_2.clicked.connect(self.abrir_tela_restaurante)
+        self.tela_novo_restaurante.pushButton_sair_2.clicked.connect(self.sair_do_sistema)
+        self.tela_novo_restaurante.pushButton_add_restaurante.clicked.connect(self.add_restaurante)
+        
+        self.tela_excluir_restaurante.pushButton_voltar.clicked.connect(self.abrir_tela_restaurante)
+        self.tela_excluir_restaurante.pushButton_sair.clicked.connect(self.sair_do_sistema)
+        self.tela_excluir_restaurante.pushButton_buscar.clicked.connect(self.excluir_restaurante_busca)
+        self.tela_excluir_restaurante.pushButton_excluir.clicked.connect(self.excluir_restaurante)
         
         self.tela_hoteis.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_hoteis.pushButton_voltar.clicked.connect(self.abrir_tela_inicial_admin)
@@ -120,6 +147,11 @@ class Main(Ui_Main, QMainWindow):
         self.tela_novo_hotel.pushButton_voltar_2.clicked.connect(self.abrir_tela_hoteis)
         self.tela_novo_hotel.pushButton_sair_2.clicked.connect(self.sair_do_sistema)
         self.tela_novo_hotel.pushButton_add_hotel.clicked.connect(self.add_hotel)
+        
+        self.tela_excluir_hotel.pushButton_voltar.clicked.connect(self.abrir_tela_hoteis)
+        self.tela_excluir_hotel.pushButton_sair.clicked.connect(self.sair_do_sistema)
+        self.tela_excluir_hotel.pushButton_buscar.clicked.connect(self.excluir_hotel_busca)
+        self.tela_excluir_hotel.pushButton_excluir.clicked.connect(self.excluir_hotel)
         
         self.tela_usuarios.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_usuarios.pushButton_voltar.clicked.connect(self.abrir_tela_inicial_admin)
@@ -372,6 +404,22 @@ class Main(Ui_Main, QMainWindow):
         for i in range(0, len(resposta)):
             for j in range(0, 6):
                 self.tela_hoteis.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(resposta[i][j])))
+    
+    def listar_restaurantes(self):
+        self.abrir_tela_restaurante()
+        mensagem = 'listarrestaurantes'
+        self.cliente_socket.send(mensagem.encode())
+        print(f'Mensagem enviada para o servidor: {mensagem}')
+        
+        resposta = self.cliente_socket.recv(1024).decode()
+        resposta = json.loads(resposta)
+        print(f'Resposta do servidor: {resposta}')
+        
+        self.tela_restaurante.tableWidget.setRowCount(len(resposta))
+        self.tela_restaurante.tableWidget.setColumnCount(6)
+        for i in range(0, len(resposta)):
+            for j in range(0, 6):
+                self.tela_restaurante.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(resposta[i][j])))
              
     def add_hotel(self):
         while True:
@@ -427,7 +475,155 @@ class Main(Ui_Main, QMainWindow):
                 except Exception as e:
                     print(f"Erro ao conectar com o servidor: {e}")
                     self.mostrar_mensagem_erro("Erro ao conectar com o servidor. Verifique sua conexão.")
-                 
+     
+    def add_restaurante(self):
+        while True:
+            nome = self.tela_novo_restaurante.lineEdit_nome.text()
+            endereco = self.tela_novo_restaurante.lineEdit_endereco.text()
+            if self.tela_novo_restaurante.radioButton_esta_sim.isChecked():
+                estacionamento = 'SIM'
+            elif self.tela_novo_restaurante.radioButton_esta_nao.isChecked():
+                estacionamento = 'NAO'
+            if self.tela_novo_restaurante.radioButton_refe_sim.isChecked():
+                refeicaoLocal = 'SIM'
+            elif self.tela_novo_restaurante.radioButton_refe_nao.isChecked():
+                refeicaoLocal = 'NAO'
+            if self.tela_novo_restaurante.radioButton_delivery_sim.isChecked():
+                delivery = 'SIM'
+            elif self.tela_novo_restaurante.radioButton_delivery_nao.isChecked():
+                delivery = 'NAO'
+            link = self.tela_novo_restaurante.lineEdit_endereco_2.text()
+            
+            if nome and endereco and estacionamento and refeicaoLocal and delivery and link:
+                try:
+                    mensagem = f'addrestaurante;{nome};{endereco};{estacionamento};{refeicaoLocal};{delivery};{link}'
+                    self.cliente_socket.send(mensagem.encode())
+                    print(f'Mensagem enviada para o servidor: {mensagem}')
+                    
+                    resposta = self.cliente_socket.recv(1024).decode()
+                    print(f'Resposta do servidor: {resposta}')
+                    
+                    if resposta.lower() == 'sim':
+                        self.mostrar_mensagem_aviso('Restaurante adicionado com sucesso')
+                        self.tela_novo_restaurante.lineEdit_nome.setText('')
+                        self.tela_novo_restaurante.lineEdit_endereco.setText('')
+                        self.tela_novo_restaurante.lineEdit_endereco_2.setText('')
+                        estacionamento = ''
+                        refeicaoLocal = ''
+                        delivery = ''
+                        self.abrir_tela_restaurante()
+                        break
+                    elif resposta.lower() == 'nome':
+                        self.mostrar_mensagem_aviso('Nome já cadastrado. Não é possível criar a conta')
+                        self.tela_novo_restaurante.lineEdit_nome.setText('')
+                    elif resposta.lower() == 'endereco':
+                        self.mostrar_mensagem_aviso('Endereço já cadastrado. Não é possível criar a conta')
+                        self.tela_novo_restaurante.lineEdit_endereco.setText('')
+                    else:
+                        self.mostrar_mensagem_erro('Erro ao adicionar restaurante')
+                        self.tela_novo_restaurante.lineEdit_nome.setText('')
+                        self.tela_novo_restaurante.lineEdit_endereco.setText('')
+                        self.tela_novo_restaurante.lineEdit_endereco_2.setText('')
+                        estacionamento = ''
+                        refeicaoLocal = ''
+                        delivery = ''
+                        self.abrir_tela_restaurante()
+                        break    
+                except ConnectionResetError:
+                    print("Conexão com o servidor foi perdida.")
+                    self.mostrar_mensagem_erro("Conexão com o servidor foi perdida.")
+                    self.sair()
+                except Exception as e:
+                    print(f"Erro ao conectar com o servidor: {e}")
+                    self.mostrar_mensagem_erro("Erro ao conectar com o servidor. Verifique sua conexão.")
+                                    
+    def excluir_hotel_busca(self):
+            while True:
+                id_hotel = self.tela_excluir_hotel.lineEdit.text()
+                if id_hotel:
+                    try:
+                        mensagem = f'buscahotel;{id_hotel}'
+                        self.cliente_socket.send(mensagem.encode())
+                        print(f'Mensagem enviada para o servidor: {mensagem}')
+                        
+                        resposta = self.cliente_socket.recv(1024).decode()
+                        print(f'Resposta do servidor: {resposta}')
+                        
+                        if resposta.lower() == 'hotel nao encontrado':
+                            self.mostrar_mensagem_aviso('Hotel não encontrado')
+                            self.tela_excluir_hotel.lineEdit_2.setText('')
+                            break
+                        else:
+                            self.tela_excluir_hotel.lineEdit_2.setText(resposta)
+                            break
+                    except ConnectionResetError:
+                        print("Conexão com o servidor foi perdida.")
+                        self.mostrar_mensagem_erro("Conexão com o servidor foi perdida.")
+                        self.sair()
+                    except Exception as e:
+                        print(f"Erro ao conectar com o servidor: {e}")
+                        self.mostrar_mensagem_erro("Erro ao conectar com o servidor. Verifique sua conexão.")
+                else:
+                    self.mostrar_mensagem_erro('ID do hotel não informado')
+                    break
+    
+    def excluir_restaurante_busca(self):
+        while True:
+            id_restaurante = self.tela_excluir_restaurante.lineEdit_id.text()
+            if id_restaurante:
+                try:
+                    mensagem = f'buscarestaurante;{id_restaurante}'
+                    self.cliente_socket.send(mensagem.encode())
+                    print(f'Mensagem enviada para o servidor: {mensagem}')
+                    
+                    resposta = self.cliente_socket.recv(1024).decode()
+                    print(f'Resposta do servidor: {resposta}')
+                    
+                    if resposta.lower() == 'restaurante nao encontrado':
+                        self.mostrar_mensagem_aviso('Restaurante não encontrado')
+                        self.tela_excluir_restaurante.lineEdit_resultado.setText('')
+                        break
+                    else:
+                        self.tela_excluir_restaurante.lineEdit_resultado.setText(resposta)
+                        break
+                except ConnectionResetError:
+                    print("Conexão com o servidor foi perdida.")
+                    self.mostrar_mensagem_erro("Conexão com o servidor foi perdida.")
+                    self.sair()
+                except Exception as e:
+                    print(f"Erro ao conectar com o servidor: {e}")
+                    self.mostrar_mensagem_erro("Erro ao conectar com o servidor. Verifique sua conexão.")
+            else:
+                self.mostrar_mensagem_erro('ID do restaurante não informado')
+                break
+    
+    def excluir_hotel(self):
+        mensagem = 'excluirhotel'
+        self.cliente_socket.send(mensagem.encode())
+        
+        resposta = self.cliente_socket.recv(1024).decode()
+        print(f'Resposta do servidor: {resposta}')
+        
+        if resposta.lower() == 'hotel excluido com sucesso':
+            self.mostrar_mensagem_aviso('Hotel excluído com sucesso')
+            self.abrir_tela_hoteis()
+        else:
+            self.mostrar_mensagem_erro('Erro ao excluir hotel')
+            self.abrir_tela_hoteis()
+    
+    def excluir_restaurante(self):
+        mensagem = 'excluirrestaurante'
+        self.cliente_socket.send(mensagem.encode())
+        
+        resposta = self.cliente_socket.recv(1024).decode()
+        print(f'Resposta do servidor: {resposta}')
+        
+        if resposta.lower() == 'restaurante excluido com sucesso':
+            self.mostrar_mensagem_aviso('Restaurante excluído com sucesso')
+            self.abrir_tela_restaurante()
+        else:
+            self.mostrar_mensagem_erro('Erro ao excluir restaurante')
+            self.abrir_tela_restaurante()
                   
     def abrir_tela_login_guia(self):
         self.QtStack.setCurrentIndex(0)  
@@ -467,6 +663,7 @@ class Main(Ui_Main, QMainWindow):
         self.QtStack.setCurrentIndex(7)
         
     def abrir_tela_restaurante(self):
+        self.stack12.close()
         self.QtStack.setCurrentIndex(8)
         
     def abrir_tela_novo_hotel(self):
@@ -474,6 +671,12 @@ class Main(Ui_Main, QMainWindow):
         
     def abrir_tela_excluir_hotel(self):
         self.stack10.show()
+        
+    def abrir_tela_novo_restaurante(self):
+        self.QtStack.setCurrentIndex(11)
+        
+    def abrir_tela_excluir_restaurante(self):
+        self.stack12.show()
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)
