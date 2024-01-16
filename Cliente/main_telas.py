@@ -126,44 +126,42 @@ class Main(Ui_Main, QMainWindow):
     
     Methods
     -------
-    sair_do_sistema()
-        Quando o usuário deseja sair do sistema, ele sai e da inicio a uma nova conexão
-    
-    login()
-        Ele recebe o email e senha do usúario para efetuar o login, se tiver na base de dados
-        ele entra na pagina inicial da conta da pessoa, se não, ele fala que login e senha estão 
-        incorretos.
-    
-    cadastro()
-        Recebe todos os dados do novo usuário para ser registrado no banco de dados, se ele não
-        preecher todos os campos o código dara um aviso.
-    
-    calendario()
-        Para no sistema a data que está no momento
-    
-    sair()
-        Sair do sistema na tela de login
-    
-    cancelar_cad()
-        É para cancelar o cadastro durante o processo
-    
-    mostrar_mensagem_erro(mensagem)
-        Responsavel por colocar todas as mensagens de erro na caixa de erro
-    
-    abrir_tela_login()
-        Abre a tela de login
-    
-    abrir_tela_inicial()
-        Abre a tela inicial
-    
-    abrir_tela_casa_polvora()
-        Abre a tela casa da polvora
-    
-    abrir_tela_casa_polvora_reserva()
-        Abre a tela casa da polvora para fazer a reserva
-        
-    abrir_tela_perfil()
-        Abre a tela de perfil e mostrar o usuário que esta logado no momento
+    __init__(self, parent=None): Este é o método de inicialização da classe principal. Ele configura a interface do 
+    usuário (UI) usando o método setupUi. Além disso, estabelece a conexão com o servidor por meio de um socket TCP, 
+    envia o tipo de usuário (cliente) e configura os sinais e slots para os elementos da interface do usuário.
+
+    nota_fiscal(self): Envia uma mensagem ao servidor solicitando uma nota fiscal. Recebe a resposta do servidor, que 
+    é um JSON contendo informações sobre a nota fiscal, e exibe essas informações na interface do usuário. Em seguida,
+    envia uma mensagem para solicitar o QR code, recebe a imagem em base64 e a exibe.
+
+    ingresso_gratis(self): Envia uma mensagem ao servidor para reservar um ingresso gratuito, com base nas informações 
+    fornecidas. Recebe a resposta do servidor e exibe uma mensagem de sucesso ou erro.
+
+    listar_restaurantes(self): Envia uma mensagem ao servidor solicitando a lista de restaurantes. Recebe a resposta em 
+    formato JSON e exibe as informações na interface do usuário.
+
+    listar_hoteis(self): Envia uma mensagem ao servidor solicitando a lista de hotéis. Recebe a resposta em formato JSON 
+    e exibe as informações na interface do usuário.
+
+    sair_do_sistema(self): Envia uma mensagem ao servidor indicando a intenção de sair. Fecha a conexão com o servidor 
+    e retorna à tela de login.
+
+    sair(self): Envia uma mensagem ao servidor indicando a intenção de sair. Fecha a conexão com o servidor e fecha o 
+    aplicativo.
+
+   login(self): Solicita informações de login do usuário, envia ao servidor e processa a resposta. Se o login for 
+   bem-sucedido, abre a tela inicial.
+
+   cadastro(self): Solicita informações de cadastro do usuário, envia ao servidor e processa a resposta. Exibe mensagens 
+   de sucesso ou erro.
+
+   cancelar_cad(self): Cancela o cadastro e retorna à tela de login.
+
+    excluir_conta(self): Solicita senha para excluir a conta, envia ao servidor e processa a resposta. Exibe mensagens 
+    de sucesso ou erro.
+
+  Vários métodos para abrir diferentes telas na interface do usuário, como abrir_tela_inicial, abrir_tela_casa_polvora, 
+  etc.
         
         
         
@@ -173,6 +171,11 @@ class Main(Ui_Main, QMainWindow):
 
         Args:
             parent (_type_, optional): _description_. Defaults to None.
+            
+        o método __init__ é responsável por preparar o ambiente inicial do programa, estabelecendo a comunicação com o 
+        servidor, configurando a interface gráfica e definindo comportamentos associados a eventos do usuário. Essas 
+        ações são essenciais para o correto funcionamento do programa, garantindo que ele esteja pronto para interagir 
+        com o usuário e responder às suas ações.
         """
         super(Main, self).__init__(parent)
         self.setupUi(self)
@@ -236,6 +239,28 @@ class Main(Ui_Main, QMainWindow):
         self.nome = ''
     
     def nota_fiscal(self): 
+        """_summary_
+        A função nota_fiscal(self) desempenha o papel de solicitar uma nota fiscal ao servidor e exibir as informações 
+        orrespondentes na interface gráfica. Aqui está uma descrição passo a passo da função:
+
+      Preparação da mensagem: Cria uma mensagem 'notafiscal' para indicar ao servidor que deseja obter uma nota fiscal. 
+      A mensagem é então codificada em bytes e enviada ao servidor através do socket (self.cliente_socket.send(mensagem.encode())).
+
+    Recebimento da resposta do servidor: Aguarda a resposta do servidor, que é esperada ser um objeto JSON contendo informações 
+    da nota fiscal. A resposta é decodificada de bytes para uma string (resposta_json = self.cliente_socket.recv(4096).decode('utf-8')).
+
+Processamento da resposta JSON: A resposta JSON é convertida para um dicionário Python usando json.loads. As informações relevantes 
+são então extraídas desse dicionário, incluindo idticket, nome_cliente, nome_monumento, data, hora e valor.
+
+Exibição das informações na interface gráfica: Utiliza os valores extraídos do dicionário para preencher os campos relevantes na 
+interface gráfica (QLineEdit) da tela de nota fiscal. Isso inclui o nome do cliente, ID do ticket, nome do monumento, data, hora e valor.
+
+Solicitação do QR code: Envia uma nova mensagem 'qrcode' ao servidor para solicitar o QR code correspondente à nota fiscal.
+
+Recebimento e exibição do QR code: Aguarda a resposta do servidor contendo o QR code em formato base64 
+(imagem_base64 = self.cliente_socket.recv(16384).decode()). Decodifica a imagem base64 para bytes e, em seguida, 
+converte esses bytes em um objeto QPixmap, que é exibido em um QLabel na interface gráfica.
+        """
         mensagem = 'notafiscal'
         self.cliente_socket.send(mensagem.encode())
         print(f'Enviada mensagem para o servidor: {mensagem}')
@@ -279,10 +304,36 @@ class Main(Ui_Main, QMainWindow):
         pixmap = QPixmap()
         pixmap.loadFromData(imagem_bytes)
         self.tela_nota_fiscal.label_qrcode.setPixmap(pixmap)
-        
-
     
     def ingresso_gratis(self):
+        """_summary_
+        Busca por Informações do Usuário:
+
+Cria uma mensagem contendo o comando 'busca' e o email do usuário para obter informações do servidor.
+Envia essa mensagem ao servidor.
+Envio de Solicitação de Ingresso:
+
+Obtém o nome do monumento (self.monumento) e a data selecionada no widget de calendário (dia) na interface gráfica.
+Cria uma mensagem contendo o comando 'ingresso', o nome do monumento e a data.
+Envia essa mensagem ao servidor.
+Recebimento da Resposta do Servidor:
+
+Aguarda a resposta do servidor sobre a disponibilidade do ingresso na data selecionada.
+A resposta (um string) é recebida e armazenada na variável resposta.
+Tratamento da Resposta:
+
+Verifica se a resposta é 'sim', indicando que o ingresso foi reservado com sucesso.
+Em caso afirmativo, exibe uma mensagem de sucesso (self.mostrar_mensagem_sucesso).
+Obtém novamente a data selecionada para utilizar na função nota_fiscal.
+Chama a função nota_fiscal para gerar e exibir a nota fiscal, que inclui um código QR.
+Caso contrário, exibe uma mensagem de erro (self.mostrar_mensagem_erro).
+Validação da Data:
+
+Antes de enviar a solicitação ao servidor, verifica se uma data foi selecionada na interface gráfica.
+Se nenhuma data foi selecionada, exibe uma mensagem de erro indicando que o usuário deve selecionar uma data.
+        Returns:
+            _type_: _description_
+        """
         mensagem = f'busca;{self.email}'
         self.cliente_socket.send(mensagem.encode())
         print(f'Enviada mensagem para o servidor: {mensagem}')
@@ -308,8 +359,26 @@ class Main(Ui_Main, QMainWindow):
             self.mostrar_mensagem_erro("Selecione uma data!")
             return None
         
-    
     def listar_restaurantes(self):
+        """
+        Abertura da Tela de Restaurantes:
+
+Chama a função abrir_tela_restaurantes para exibir a interface gráfica relacionada aos restaurantes.
+Envio de Solicitação ao Servidor:
+
+Cria uma mensagem contendo o comando 'listarrestaurantes'.
+Envia essa mensagem ao servidor por meio do socket self.cliente_socket.
+Exibe uma mensagem indicando o envio da solicitação.
+Recebimento e Processamento da Resposta do Servidor:
+
+Aguarda a resposta do servidor após o envio da solicitação.
+A resposta é recebida, decodificada e convertida de JSON para um formato adequado para processamento (resposta = json.loads(resposta)).
+Exibe a resposta recebida do servidor (print(f'Recebida resposta do servidor: {resposta}')).
+Preenchimento da Tabela na Interface Gráfica:
+
+Configura o número de linhas e colunas na tabela de restaurantes na interface gráfica com base na resposta do servidor.
+Utiliza um loop para preencher cada célula da tabela com os dados fornecidos pelo servidor.
+        """
         self.abrir_tela_restaurantes()
         mensagem = f'listarrestaurantes'
         self.cliente_socket.send(mensagem.encode())
@@ -326,6 +395,25 @@ class Main(Ui_Main, QMainWindow):
                 self.tela_restaurantes.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(resposta[i][j]))
     
     def listar_hoteis(self):
+        """_summary_ 
+        Abertura da Tela de Hotéis:
+
+Chama a função abrir_tela_hoteis para exibir a interface gráfica relacionada aos hotéis.
+Envio de Solicitação ao Servidor:
+
+Cria uma mensagem contendo o comando 'listarhoteis'.
+Envia essa mensagem ao servidor por meio do socket self.cliente_socket.
+Exibe uma mensagem indicando o envio da solicitação.
+Recebimento e Processamento da Resposta do Servidor:
+
+Aguarda a resposta do servidor após o envio da solicitação.
+A resposta é recebida, decodificada e convertida de JSON para um formato adequado para processamento (resposta = json.loads(resposta)).
+Exibe a resposta recebida do servidor (print(f'Recebida resposta do servidor: {resposta}')).
+Preenchimento da Tabela na Interface Gráfica:
+
+Configura o número de linhas e colunas na tabela de hotéis na interface gráfica com base na resposta do servidor.
+Utiliza um loop para preencher cada célula da tabela com os dados fornecidos pelo servidor.
+        """
         self.abrir_tela_hoteis()
         mensagem = f'listarhoteis'
         self.cliente_socket.send(mensagem.encode())
@@ -342,6 +430,26 @@ class Main(Ui_Main, QMainWindow):
                 self.tela_hoteis.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(resposta[i][j]))
     
     def sair_do_sistema(self):
+        """
+        Envio de Mensagem de Desconexão:
+
+Cria uma mensagem contendo o comando 'sair'.
+Envia essa mensagem ao servidor por meio do socket self.cliente_socket.
+Recebimento da Resposta do Servidor:
+
+Aguarda a resposta do servidor após o envio da mensagem de desconexão.
+A resposta é recebida, decodificada e armazenada na variável resposta (resposta = self.cliente_socket.recv(1024).decode()).
+Exibe a resposta recebida do servidor (print(f'Resposta recebida: {resposta}')).
+Verificação da Resposta para Desconexão:
+
+Verifica se a resposta do servidor indica que o cliente foi desconectado pelo servidor (if resposta.lower() == 'desconectado pelo servidor').
+Fechamento e Recriação do Socket em Caso de Desconexão:
+
+Se o cliente foi desconectado pelo servidor, fecha o socket atual (self.cliente_socket.close()).
+Cria um novo objeto de socket para o cliente (self.cliente_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)).
+Conecta o novo socket ao endereço do servidor (self.cliente_socket.connect(self.addr)).
+Chama a função abrir_tela_login() para exibir a tela de login.
+        """
         msg = f'sair'
         self.cliente_socket.send(msg.encode())
         resposta = self.cliente_socket.recv(1024).decode()
@@ -354,6 +462,26 @@ class Main(Ui_Main, QMainWindow):
             self.abrir_tela_login()
             
     def sair(self):
+        """
+        Envio de Mensagem de Desconexão:
+
+Cria uma mensagem contendo o comando 'sair'.
+Envia essa mensagem ao servidor por meio do socket self.cliente_socket (self.cliente_socket.send(msg.encode())).
+Recebimento da Resposta do Servidor:
+
+Aguarda a resposta do servidor após o envio da mensagem de desconexão.
+A resposta é recebida, decodificada e armazenada na variável resposta (resposta = self.cliente_socket.recv(1024).decode()).
+Verificação da Resposta para Desconexão:
+
+Verifica se a resposta do servidor indica que o cliente foi desconectado pelo servidor (if resposta.lower() == 'Desconectado pelo servidor').
+Fechamento do Socket e da Interface Gráfica:
+
+Se o cliente foi desconectado pelo servidor, fecha o socket atual (self.cliente_socket.close()).
+Fecha a interface gráfica do programa (self.close()).
+Exibição de Mensagem no Console:
+
+Imprime no console a mensagem indicando que o cliente saiu do sistema (print('Saiu do sistema')).
+        """
         msg = 'sair'
         self.cliente_socket.send(msg.encode())
         
@@ -364,6 +492,36 @@ class Main(Ui_Main, QMainWindow):
         print('Saiu do sistema')  
         
     def login(self):
+        """
+        Obtenção de Credenciais:
+
+Obtém as credenciais do usuário (e-mail e senha) a partir dos campos de entrada na tela de login 
+(email = self.tela_login.lineEdit_email.text() e senha = self.tela_login.lineEdit_senha.text()).
+Verificação das Credenciais:
+
+Verifica se tanto o e-mail quanto a senha foram fornecidos (if email and senha:).
+Calcula o hash MD5 da senha fornecida (senha_md5 = hashlib.md5(senha.encode()).hexdigest()).
+Envio da Mensagem de Login ao Servidor:
+
+Cria uma mensagem contendo o comando 'login', o e-mail e a senha hash MD5.
+Envia essa mensagem ao servidor por meio do socket self.cliente_socket (self.cliente_socket.send(mensagem.encode('utf-8'))).
+Recebimento da Resposta do Servidor:
+
+Aguarda a resposta do servidor após o envio da mensagem de login.
+A resposta é recebida, decodificada e armazenada na variável resposta (resposta = self.cliente_socket.recv(1024).decode('utf-8')).
+Verificação da Resposta para Tomar Ações:
+
+Verifica se a resposta do servidor indica um "login bem-sucedido".
+Se sim, armazena o e-mail do usuário, limpa os campos de entrada da tela de login, abre a tela inicial e encerra o loop (break).
+Se não, exibe mensagens de erro apropriadas e continua aguardando novas tentativas.
+Tratamento de Exceções:
+
+Captura exceções como ConnectionResetError e outras exceções genéricas durante o processo de comunicação com o servidor.
+Exibe mensagens de erro apropriadas para problemas de conexão ou outros erros desconhecidos.
+Validação de Campos Vazios:
+
+Verifica se os campos de e-mail e senha estão vazios e exibe mensagens de erro correspondentes.
+        """
         while True:
             email = self.tela_login.lineEdit_email.text()
             senha = self.tela_login.lineEdit_senha.text()
@@ -408,6 +566,35 @@ class Main(Ui_Main, QMainWindow):
                 break  
 
     def cadastro(self):
+        """Obtenção de Dados do Formulário:
+
+Obtém os dados do formulário de cadastro, como nome, CPF, data de nascimento, e-mail e senha.
+Verificação dos Campos Obrigatórios:
+
+Verifica se nenhum dos campos obrigatórios (nome, CPF, e-mail, senha) está vazio.
+Hash da Senha:
+
+Calcula o hash MD5 da senha fornecida (senha_md5 = hashlib.md5(senha.encode()).hexdigest()).
+Envio da Mensagem de Cadastro ao Servidor:
+
+Cria uma mensagem contendo o comando 'cadastro' e os dados do usuário.
+Envia essa mensagem ao servidor por meio do socket self.cliente_socket (self.cliente_socket.send(msg.encode())).
+Recebimento e Tratamento da Resposta do Servidor:
+
+Aguarda a resposta do servidor após o envio da mensagem de cadastro.
+A resposta é recebida, decodificada e armazenada na variável resp.
+Baseado na resposta, toma diversas ações:
+Limpa os campos de entrada e exibe uma mensagem informativa se o cadastro for bem-sucedido.
+Exibe mensagens de erro específicas para casos como CPF ou e-mail já cadastrados, e-mails inválidos, senhas 
+curtas, CPF inválido, menores de idade, ou outros erros desconhecidos.
+Tratamento de Exceções:
+
+Captura exceções genéricas durante o processo de comunicação com o servidor.
+Exibe mensagens de erro apropriadas para problemas de conexão ou outros erros desconhecidos.
+Validação dos Campos Preenchidos:
+
+Verifica se todos os campos foram preenchidos e exibe uma mensagem de erro caso contrário.
+        """
         print('Cadastro')
         nome = self.tela_cadastro.lineEdit_nome.text()
         cpf = self.tela_cadastro.lineEdit_cpf.text()
@@ -559,10 +746,13 @@ class Main(Ui_Main, QMainWindow):
             if ';' in resposta:
                 nome, email = resposta.split(';')
                 print(f'Nome: {nome}, Email: {email}')
-                self.nome = nome
+                
                 self.tela_perfil.lineEdit_nome.setText(nome)
                 self.tela_perfil.lineEdit_email.setText(email)
-                return nome
+                resposta = self.cliente_socket.recv(1024).decode()
+                
+                self.QtStack.setCurrentIndex(5)        
+                
             else:
                 print("Resposta do servidor em formato inesperado.")
         except Exception as e:
@@ -589,6 +779,7 @@ class Main(Ui_Main, QMainWindow):
         
     def fechar_tela_nota_fiscal(self):
         self.stack10.close()
+        self.abrir_tela_inicial()
         
     def voltar_tela_reserva_gratis(self):
         if self.monumento == 'CASA DA POLVORA':

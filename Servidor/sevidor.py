@@ -150,59 +150,59 @@ class ClienteThread(threading.Thread):
                                     print('Operação não reconhecida:', operacao_data)
                         elif operacao == 'listarhoteis':
                             self.listar_hoteis()
-                            #while True:
-                            operacao_hoteis = self.csocket.recv(1024).decode('utf-8')
-                            operacao_hoteis, *dados_hotel = operacao_hoteis.split(';')
-                            dados_hotel = ';'.join(dados_hotel)
-                            print('Operação dentro de listar hoteis:', operacao_hoteis)
-                            print('Dados:', dados_hotel)
+                            while True:
+                                operacao_hoteis = self.csocket.recv(1024).decode('utf-8')
+                                operacao_hoteis, *dados_hotel = operacao_hoteis.split(';')
+                                dados_hotel = ';'.join(dados_hotel)
+                                print('Operação dentro de listar hoteis:', operacao_hoteis)
+                                print('Dados:', dados_hotel)
                                     
-                            if operacao_hoteis == 'sair':
-                                self.sair()
-                                break
-                                    
-                            if operacao_hoteis == 'addhotel':
-                                nome, endereco, entacionamento, piscina, link = dados_hotel.split(';')
-                                    
-                                sucesso = self.cadastrar_novo_hotel(nome, endereco, entacionamento, piscina, link)
-                                print(sucesso)
-                                if sucesso == True:
-                                    print(f'{nome} esta cadastrado no sistema!')
-                                    self.csocket.send("sim".encode('utf-8'))
-                                    break
-                                elif sucesso == nome:
-                                    print('Nome já cadastrado. Não é possível criar a conta')
-                                    self.csocket.send("nome".encode('utf-8'))
-                                    break
-                                elif sucesso == endereco:
-                                    print('Endereco já cadastrado. Não é possível criar a conta')
-                                    self.csocket.send("endereco".encode('utf-8'))
-                                    break
-                                else:
-                                    print('Erro ao adicionar hotel')
-                            elif operacao_hoteis == 'buscahotel':
-                                hotel = self.busca_hotel(dados_hotel)
-                                self.csocket.send(hotel[0].encode('utf-8'))
-                                id_hotel = dados_hotel.split(';')[0]
-                                #while True:
-                                operacao_excluir_hotel = self.csocket.recv(1024).decode('utf-8')
-                                operacao_excluir_hotel, *dados_excluir_hotel = operacao_excluir_hotel.split(';')
-                                dados_excluir_hotel = ';'.join(dados_excluir_hotel)
-                                print('Operação dentro de excluir hotel:', operacao_excluir_hotel)
-                                print('Dados:', dados_excluir_hotel)
-                                        
-                                if operacao_excluir_hotel == 'sair':
+                                if operacao_hoteis == 'sair':
                                     self.sair()
                                     break
+                                    
+                                if operacao_hoteis == 'addhotel':
+                                    nome, endereco, entacionamento, piscina, link = dados_hotel.split(';')
+                                    
+                                    sucesso = self.cadastrar_novo_hotel(nome, endereco, entacionamento, piscina, link)
+                                    print(sucesso)
+                                    if sucesso == True:
+                                        print(f'{nome} esta cadastrado no sistema!')
+                                        self.csocket.send("sim".encode('utf-8'))
+                                        break
+                                    elif sucesso == nome:
+                                        print('Nome já cadastrado. Não é possível criar a conta')
+                                        self.csocket.send("nome".encode('utf-8'))
+                                        break
+                                    elif sucesso == endereco:
+                                        print('Endereco já cadastrado. Não é possível criar a conta')
+                                        self.csocket.send("endereco".encode('utf-8'))
+                                        break
+                                    else:
+                                       print('Erro ao adicionar hotel')
+                                elif operacao_hoteis == 'buscahotel':
+                                    hotel = self.busca_hotel(dados_hotel)
+                                    self.csocket.send(hotel[0].encode('utf-8'))
+                                    id_hotel = dados_hotel.split(';')[0]
+                                while True:
+                                    operacao_excluir_hotel = self.csocket.recv(1024).decode('utf-8')
+                                    operacao_excluir_hotel, *dados_excluir_hotel = operacao_excluir_hotel.split(';')
+                                    dados_excluir_hotel = ';'.join(dados_excluir_hotel)
+                                    print('Operação dentro de excluir hotel:', operacao_excluir_hotel)
+                                    print('Dados:', dados_excluir_hotel)
+                                        
+                                    if operacao_excluir_hotel == 'sair':
+                                        self.sair()
+                                        break
                                             
-                                if operacao_excluir_hotel == 'excluirhotel':
-                                    self.excluir_hotel(id_hotel)
-                                    self.csocket.send("hotel excluido com sucesso".encode('utf-8'))
-                                    break
+                                    if operacao_excluir_hotel == 'excluirhotel':
+                                        self.excluir_hotel(id_hotel)
+                                        self.csocket.send("hotel excluido com sucesso".encode('utf-8'))
+                                        break
+                                    else:
+                                        print('Operação não reconhecida:', operacao_excluir_hotel)
                                 else:
-                                    print('Operação não reconhecida:', operacao_excluir_hotel)
-                            else:
-                                print('Operação não reconhecida:', operacao_hoteis)
+                                    print('Operação não reconhecida:', operacao_hoteis)
                          
                         elif operacao == 'listarrestaurantes':
                             self.listar_restaurantes()
@@ -301,27 +301,9 @@ class ClienteThread(threading.Thread):
                                 email_busca = dados_operacao.split(';')[0]
                                 print(email_busca)
                                 print("Realizando busca...")
-                                resultado = self.busca(email_busca)
+                                self.busca(email_busca)
                                 
-                                if resultado:
-                                    data_operacao = self.csocket.recv(1024).decode('utf-8')
-                                    operacao, *dados_operacao = data_operacao.split(';')
-                                    dados_operacao = ';'.join(dados_operacao)
-                                    print('Operação dentro do perfil:', operacao)
-                                    print('Dados:', dados_operacao)
-                                    
-                                    if operacao == 'excluir':
-                                        print('Excluindo conta...')
-                                        if self.verificar_usuario_senha(dados_operacao):
-                                            self.excluir_conta(email_busca)
-                                            break
-                                        else:
-                                            self.csocket.send("Senha incorreta".encode('utf-8'))
-                                    else:
-                                        print('Operação não reconhecida:', operacao)
-                                else:
-                                    print('Erro ao realizar busca')
-                            
+            
                             elif operacao == 'CASA DA POLVORA':
                                 local = 'CASA DA POLVORA'
                                 operacao_casa_da_polvora = self.csocket.recv(1024).decode('utf-8')
@@ -435,11 +417,6 @@ class ClienteThread(threading.Thread):
                         self.csocket.send("CPF invalido".encode('utf-8'))
                         return False
                     
-                    if not self.verificar_maioridade(dataN):
-                        print('Menor de idade')
-                        self.csocket.send("Menor de idade".encode('utf-8'))
-                        return False
-                    
                     sucesso = self.cadastrar_novo_usuario(nome, cpf, dataN, email, senha)
                     print(sucesso)
                     if sucesso == True:
@@ -460,6 +437,24 @@ class ClienteThread(threading.Thread):
             print(f"Erro durante a execução da thread: {e}")
         finally:
             self.csocket.close()
+            
+    def listar_tickets_user(self, nome):
+        try:
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT idticket, nome_monumento, dia, horario, tipo_valor FROM ticket WHERE nome_cliente = %s", (nome,))
+            resultado = cursor.fetchall()
+            print(resultado)
+            json_resultado = json.dumps(resultado)
+            self.csocket.send(json_resultado.encode('utf-8'))
+            print(json_resultado)
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        finally:
+            conexao.close()
+    
             
     def buscar_qrcode(self, idticket):
         try:
@@ -772,16 +767,6 @@ class ClienteThread(threading.Thread):
             print(f"Erro durante a busca: {e}")
         finally:
             self.csocket.close()
-
-    def verificar_maioridade(data_nascimento):
-        data_nascimento = datetime.strptime(data_nascimento, '%d-%m-%Y')
-        data_atual = datetime.now()
-        idade = data_atual.year - data_nascimento.year - ((data_atual.month, data_atual.day) < (data_nascimento.month, data_nascimento.day))
-
-        if idade >= 18:
-            return True
-        else:
-            return False
         
     def verificar_senha_admin(self, dados):
         while True:

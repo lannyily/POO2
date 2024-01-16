@@ -181,7 +181,7 @@
      <rect>
       <x>510</x>
       <y>230</y>
-      <width>641</width>
+      <width>631</width>
       <height>391</height>
      </rect>
     </property>
@@ -190,27 +190,7 @@
     </property>
     <column>
      <property name="text">
-      <string>Nome</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>E-mail</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>Data</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
       <string>Código</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>Valor</string>
      </property>
     </column>
     <column>
@@ -220,7 +200,17 @@
     </column>
     <column>
      <property name="text">
-      <string>Status</string>
+      <string>Data</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Horario</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Valor</string>
      </property>
     </column>
    </widget>
