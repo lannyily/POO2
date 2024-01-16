@@ -14,11 +14,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_tela_inicial(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1213, 871)
+        MainWindow.resize(1213, 815)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(30, 240, 731, 561))
+        self.label.setGeometry(QtCore.QRect(20, 200, 731, 561))
         self.label.setStyleSheet("border: 1px solid black;")
         self.label.setText("")
         self.label.setPixmap(QtGui.QPixmap("../imagens/foto3.png"))
@@ -199,11 +199,11 @@ class Ui_tela_inicial(object):
         self.label_8.setScaledContents(True)
         self.label_8.setObjectName("label_8")
         self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(30, 20, 1141, 201))
+        self.widget.setGeometry(QtCore.QRect(20, 10, 1141, 171))
         self.widget.setStyleSheet("background-color: rgb(255, 222, 124);")
         self.widget.setObjectName("widget")
         self.layoutWidget = QtWidgets.QWidget(self.widget)
-        self.layoutWidget.setGeometry(QtCore.QRect(580, 30, 152, 157))
+        self.layoutWidget.setGeometry(QtCore.QRect(580, 50, 152, 101))
         self.layoutWidget.setObjectName("layoutWidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -257,34 +257,14 @@ class Ui_tela_inicial(object):
 "        }")
         self.pushButton_hotel.setObjectName("pushButton_hotel")
         self.verticalLayout_2.addWidget(self.pushButton_hotel)
-        self.pushButton_cultura_lazer = QtWidgets.QPushButton(self.layoutWidget)
-        self.pushButton_cultura_lazer.setStyleSheet("QPushButton {\n"
-"           \n"
-"    background-color: rgb(111, 125, 255);\n"
-"           border: none;\n"
-"           color: white;\n"
-"           padding: 10px 20px;\n"
-"           text-align: center;\n"
-"           text-decoration: none;\n"
-"           display: inline-block;\n"
-"           font-size: 16px;\n"
-"           margin: 4px 2px;\n"
-"           cursor: pointer;\n"
-"           border-radius: 8px;\n"
-"        }\n"
-"        QPushButton:hover {\n"
-"           background-color: rgb(85, 170, 255); \n"
-"        }")
-        self.pushButton_cultura_lazer.setObjectName("pushButton_cultura_lazer")
-        self.verticalLayout_2.addWidget(self.pushButton_cultura_lazer)
         self.label_9 = QtWidgets.QLabel(self.widget)
-        self.label_9.setGeometry(QtCore.QRect(-10, -10, 401, 211))
+        self.label_9.setGeometry(QtCore.QRect(10, 10, 321, 161))
         self.label_9.setText("")
         self.label_9.setPixmap(QtGui.QPixmap("../imagens/logo.png"))
         self.label_9.setScaledContents(True)
         self.label_9.setObjectName("label_9")
         self.pushButton_sair = QtWidgets.QPushButton(self.widget)
-        self.pushButton_sair.setGeometry(QtCore.QRect(1000, 140, 121, 41))
+        self.pushButton_sair.setGeometry(QtCore.QRect(1000, 120, 121, 41))
         self.pushButton_sair.setStyleSheet("QPushButton {\n"
 "           \n"
 "    background-color: rgb(111, 125, 255);\n"
@@ -304,8 +284,8 @@ class Ui_tela_inicial(object):
 "        }")
         self.pushButton_sair.setObjectName("pushButton_sair")
         self.perfilButton = QtWidgets.QPushButton(self.widget)
-        self.perfilButton.setGeometry(QtCore.QRect(1020, 40, 81, 81))
-        self.perfilButton.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.perfilButton.setGeometry(QtCore.QRect(1020, 30, 81, 81))
+        self.perfilButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.perfilButton.setStyleSheet("QPushButton {\n"
 "    font-size: 30px;\n"
 "    border-radius: 40px;\n"
@@ -331,7 +311,7 @@ class Ui_tela_inicial(object):
         self.perfilButton.setIconSize(QtCore.QSize(80, 80))
         self.perfilButton.setObjectName("perfilButton")
         self.scrollArea = QtWidgets.QScrollArea(self.centralwidget)
-        self.scrollArea.setGeometry(QtCore.QRect(780, 240, 391, 561))
+        self.scrollArea.setGeometry(QtCore.QRect(770, 200, 391, 561))
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
@@ -350,10 +330,10 @@ class Ui_tela_inicial(object):
         self.label_11.setPixmap(QtGui.QPixmap("../imagens/excursao1.png"))
         self.label_11.setScaledContents(True)
         self.label_11.setObjectName("label_11")
-        self.pushButton = QtWidgets.QPushButton(self.frame)
-        self.pushButton.setGeometry(QtCore.QRect(-10, 140, 391, 41))
-        self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.pushButton.setStyleSheet("\n"
+        self.pushButton_fe = QtWidgets.QPushButton(self.frame)
+        self.pushButton_fe.setGeometry(QtCore.QRect(-10, 140, 391, 41))
+        self.pushButton_fe.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton_fe.setStyleSheet("\n"
 "QPushButton {\n"
 "           \n"
 "    background-color: rgb(111, 125, 255);\n"
@@ -372,8 +352,8 @@ class Ui_tela_inicial(object):
 "           background-color: rgb(85, 170, 255); \n"
 "        }\n"
 "   ")
-        self.pushButton.setCheckable(False)
-        self.pushButton.setObjectName("pushButton")
+        self.pushButton_fe.setCheckable(False)
+        self.pushButton_fe.setObjectName("pushButton_fe")
         self.verticalLayout.addWidget(self.frame)
         self.frame_2 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
         self.frame_2.setStyleSheet("background-color: rgb(255, 255, 255);")
@@ -386,10 +366,10 @@ class Ui_tela_inicial(object):
         self.label_12.setPixmap(QtGui.QPixmap("../imagens/excursao2.png"))
         self.label_12.setScaledContents(True)
         self.label_12.setObjectName("label_12")
-        self.pushButton_2 = QtWidgets.QPushButton(self.frame_2)
-        self.pushButton_2.setGeometry(QtCore.QRect(-20, 140, 401, 41))
-        self.pushButton_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.pushButton_2.setStyleSheet("\n"
+        self.pushButton_cult = QtWidgets.QPushButton(self.frame_2)
+        self.pushButton_cult.setGeometry(QtCore.QRect(-20, 140, 401, 41))
+        self.pushButton_cult.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton_cult.setStyleSheet("\n"
 "QPushButton {\n"
 "           \n"
 "    background-color: rgb(111, 125, 255);\n"
@@ -408,7 +388,7 @@ class Ui_tela_inicial(object):
 "           background-color: rgb(85, 170, 255); \n"
 "        }\n"
 "   ")
-        self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_cult.setObjectName("pushButton_cult")
         self.verticalLayout.addWidget(self.frame_2)
         self.frame_3 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
         self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
@@ -421,10 +401,10 @@ class Ui_tela_inicial(object):
         self.label_13.setPixmap(QtGui.QPixmap("../imagens/excursao3.png"))
         self.label_13.setScaledContents(True)
         self.label_13.setObjectName("label_13")
-        self.pushButton_3 = QtWidgets.QPushButton(self.frame_3)
-        self.pushButton_3.setGeometry(QtCore.QRect(-10, 140, 391, 41))
-        self.pushButton_3.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.pushButton_3.setStyleSheet("\n"
+        self.pushButton_his = QtWidgets.QPushButton(self.frame_3)
+        self.pushButton_his.setGeometry(QtCore.QRect(-10, 140, 391, 41))
+        self.pushButton_his.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton_his.setStyleSheet("\n"
 "QPushButton {\n"
 "           \n"
 "    background-color: rgb(111, 125, 255);\n"
@@ -443,11 +423,11 @@ class Ui_tela_inicial(object):
 "           background-color: rgb(85, 170, 255); \n"
 "        }\n"
 "   ")
-        self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_his.setObjectName("pushButton_his")
         self.verticalLayout.addWidget(self.frame_3)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.label_10 = QtWidgets.QLabel(self.centralwidget)
-        self.label_10.setGeometry(QtCore.QRect(30, 240, 221, 41))
+        self.label_10.setGeometry(QtCore.QRect(20, 200, 221, 41))
         font = QtGui.QFont()
         font.setPointSize(13)
         font.setBold(True)
@@ -488,11 +468,10 @@ class Ui_tela_inicial(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButton_restaurante.setText(_translate("MainWindow", "Restaurantes "))
         self.pushButton_hotel.setText(_translate("MainWindow", "Hotéis "))
-        self.pushButton_cultura_lazer.setText(_translate("MainWindow", "Cultura e Lazer"))
         self.pushButton_sair.setText(_translate("MainWindow", "SAIR"))
-        self.pushButton.setText(_translate("MainWindow", "Caminho Espiritual: A Capital da Fé"))
-        self.pushButton_2.setText(_translate("MainWindow", "Herança e Identidade: Riquezas e Tradições"))
-        self.pushButton_3.setText(_translate("MainWindow", "Raízes Históricas: Uma Jornada pelo Passado"))
+        self.pushButton_fe.setText(_translate("MainWindow", "Caminho Espiritual: A Capital da Fé"))
+        self.pushButton_cult.setText(_translate("MainWindow", "Herança e Identidade: Riquezas e Tradições"))
+        self.pushButton_his.setText(_translate("MainWindow", "Raízes Históricas: Uma Jornada pelo Passado"))
         self.label_10.setText(_translate("MainWindow", " Pontos Históricos "))
 
 

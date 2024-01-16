@@ -31,28 +31,32 @@ class MainWindow(QMainWindow):
 
     def gerar_e_armazenar_qr_code(self):
         try:
-            # Gera um número aleatório de 8 dígitos
+        # Gera um número aleatório de 8 dígitos
             numero_aleatorio = random.randint(10000000, 99999999)
             print(f"Número aleatório: {numero_aleatorio}")
-            # Cria um QR code a partir do número aleatório
+
+        # Formata os dados para o QR code
+            dados_qr_code = f"{numero_aleatorio}, Erlanny Rodrigues Silva, Museu, 24-07-2024, 12:00 - 14:00, R$ 20,00"
+
+        # Cria um QR code a partir dos dados formatados
             qr = qrcode.QRCode(
                 version=1,
                 error_correction=qrcode.constants.ERROR_CORRECT_L,
                 box_size=10,
                 border=4,
             )
-            qr.add_data(str(numero_aleatorio))
+            qr.add_data(dados_qr_code)
             qr.make(fit=True)
 
-            # Cria uma imagem do QR code
+        # Cria uma imagem do QR code
             img = qr.make_image(fill_color="black", back_color="white")
 
-            # Converte a imagem para bytes
+        # Converte a imagem para bytes
             buffer = BytesIO()
             img.save(buffer)
             imagem_bytes = buffer.getvalue()
 
-            # Armazena a imagem no banco de dados
+        # Armazena a imagem no banco de dados
             self.cursor.execute("INSERT INTO qrcodes (imagem) VALUES (%s)", (imagem_bytes,))
             self.conexao.commit()
 

@@ -14,61 +14,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_reserva_gratis(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1177, 723)
+        MainWindow.resize(716, 606)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(10, 10, 1151, 141))
+        self.widget.setGeometry(QtCore.QRect(10, 10, 691, 141))
         self.widget.setStyleSheet("background-color: rgb(255, 222, 124);")
         self.widget.setObjectName("widget")
-        self.label_3 = QtWidgets.QLabel(self.widget)
-        self.label_3.setGeometry(QtCore.QRect(-10, -10, 341, 151))
-        self.label_3.setText("")
-        self.label_3.setPixmap(QtGui.QPixmap("../imagens/logo.png"))
-        self.label_3.setScaledContents(True)
-        self.label_3.setObjectName("label_3")
-        self.pushButton_sair = QtWidgets.QPushButton(self.widget)
-        self.pushButton_sair.setGeometry(QtCore.QRect(840, 20, 139, 41))
-        self.pushButton_sair.setStyleSheet("QPushButton {\n"
-"           \n"
-"    background-color: rgb(111, 125, 255);\n"
-"           border: none;\n"
-"           color: white;\n"
-"           padding: 10px 20px;\n"
-"           text-align: center;\n"
-"           text-decoration: none;\n"
-"           display: inline-block;\n"
-"           font-size: 16px;\n"
-"           margin: 4px 2px;\n"
-"           cursor: pointer;\n"
-"           border-radius: 8px;\n"
-"        }\n"
-"        QPushButton:hover {\n"
-"           background-color: rgb(85, 170, 255); \n"
-"        }")
-        self.pushButton_sair.setObjectName("pushButton_sair")
-        self.pushButton_voltar = QtWidgets.QPushButton(self.widget)
-        self.pushButton_voltar.setGeometry(QtCore.QRect(840, 70, 139, 41))
-        self.pushButton_voltar.setStyleSheet("QPushButton {\n"
-"           \n"
-"    background-color: rgb(111, 125, 255);\n"
-"           border: none;\n"
-"           color: white;\n"
-"           padding: 10px 20px;\n"
-"           text-align: center;\n"
-"           text-decoration: none;\n"
-"           display: inline-block;\n"
-"           font-size: 16px;\n"
-"           margin: 4px 2px;\n"
-"           cursor: pointer;\n"
-"           border-radius: 8px;\n"
-"        }\n"
-"        QPushButton:hover {\n"
-"           background-color: rgb(85, 170, 255); \n"
-"        }")
-        self.pushButton_voltar.setObjectName("pushButton_voltar")
         self.pushButton_perfil = QtWidgets.QPushButton(self.widget)
-        self.pushButton_perfil.setGeometry(QtCore.QRect(1020, 30, 81, 81))
+        self.pushButton_perfil.setGeometry(QtCore.QRect(580, 30, 81, 81))
         self.pushButton_perfil.setStyleSheet("QPushButton {\n"
 "    font-size: 30px;\n"
 "    border-radius: 40px;\n"
@@ -93,19 +47,48 @@ class Ui_reserva_gratis(object):
         self.pushButton_perfil.setIcon(icon)
         self.pushButton_perfil.setIconSize(QtCore.QSize(80, 80))
         self.pushButton_perfil.setObjectName("pushButton_perfil")
-        self.calendarWidget = QtWidgets.QCalendarWidget(self.centralwidget)
-        self.calendarWidget.setGeometry(QtCore.QRect(60, 340, 392, 236))
-        self.calendarWidget.setObjectName("calendarWidget")
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(60, 290, 181, 31))
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label_2.setFont(font)
-        self.label_2.setObjectName("label_2")
+        self.pushButton_voltar = QtWidgets.QPushButton(self.widget)
+        self.pushButton_voltar.setGeometry(QtCore.QRect(420, 20, 139, 41))
+        self.pushButton_voltar.setStyleSheet("QPushButton {\n"
+"           \n"
+"    background-color: rgb(111, 125, 255);\n"
+"           border: none;\n"
+"           color: white;\n"
+"           padding: 10px 20px;\n"
+"           text-align: center;\n"
+"           text-decoration: none;\n"
+"           display: inline-block;\n"
+"           font-size: 16px;\n"
+"           margin: 4px 2px;\n"
+"           cursor: pointer;\n"
+"           border-radius: 8px;\n"
+"        }\n"
+"        QPushButton:hover {\n"
+"           background-color: rgb(85, 170, 255); \n"
+"        }")
+        self.pushButton_voltar.setObjectName("pushButton_voltar")
+        self.pushButton_sair = QtWidgets.QPushButton(self.widget)
+        self.pushButton_sair.setGeometry(QtCore.QRect(420, 70, 139, 41))
+        self.pushButton_sair.setStyleSheet("QPushButton {\n"
+"           \n"
+"    background-color: rgb(111, 125, 255);\n"
+"           border: none;\n"
+"           color: white;\n"
+"           padding: 10px 20px;\n"
+"           text-align: center;\n"
+"           text-decoration: none;\n"
+"           display: inline-block;\n"
+"           font-size: 16px;\n"
+"           margin: 4px 2px;\n"
+"           cursor: pointer;\n"
+"           border-radius: 8px;\n"
+"        }\n"
+"        QPushButton:hover {\n"
+"           background-color: rgb(85, 170, 255); \n"
+"        }")
+        self.pushButton_sair.setObjectName("pushButton_sair")
         self.pushButton_confirmar = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_confirmar.setGeometry(QtCore.QRect(700, 560, 221, 61))
+        self.pushButton_confirmar.setGeometry(QtCore.QRect(450, 480, 221, 61))
         self.pushButton_confirmar.setStyleSheet("QPushButton {\n"
 "           \n"
 "    background-color: rgb(70, 0, 211);\n"
@@ -127,60 +110,74 @@ class Ui_reserva_gratis(object):
 "    background-color: rgb(85, 85, 255);\n"
 "        }")
         self.pushButton_confirmar.setObjectName("pushButton_confirmar")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(60, 180, 215, 31))
+        self.label_5 = QtWidgets.QLabel(self.centralwidget)
+        self.label_5.setGeometry(QtCore.QRect(460, 290, 191, 161))
+        self.label_5.setText("")
+        self.label_5.setPixmap(QtGui.QPixmap("../imagens/gratis.png"))
+        self.label_5.setScaledContents(True)
+        self.label_5.setWordWrap(False)
+        self.label_5.setObjectName("label_5")
+        self.widget1 = QtWidgets.QWidget(self.centralwidget)
+        self.widget1.setGeometry(QtCore.QRect(40, 180, 331, 71))
+        self.widget1.setObjectName("widget1")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.widget1)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label = QtWidgets.QLabel(self.widget1)
         font = QtGui.QFont()
         font.setPointSize(13)
         font.setBold(True)
         font.setWeight(75)
         self.label.setFont(font)
         self.label.setObjectName("label")
-        self.label_4 = QtWidgets.QLabel(self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(480, 310, 268, 22))
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label_4.setFont(font)
-        self.label_4.setObjectName("label_4")
-        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(480, 340, 421, 31))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.lineEdit.setFont(font)
-        self.lineEdit.setReadOnly(True)
-        self.lineEdit.setObjectName("lineEdit")
-        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_2.setGeometry(QtCore.QRect(60, 230, 621, 41))
+        self.verticalLayout.addWidget(self.label)
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.widget1)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.lineEdit_2.setFont(font)
         self.lineEdit_2.setObjectName("lineEdit_2")
-        self.label_5 = QtWidgets.QLabel(self.centralwidget)
-        self.label_5.setGeometry(QtCore.QRect(920, 170, 231, 201))
-        self.label_5.setText("")
-        self.label_5.setPixmap(QtGui.QPixmap("../imagens/gratis.png"))
-        self.label_5.setScaledContents(True)
-        self.label_5.setWordWrap(False)
-        self.label_5.setObjectName("label_5")
-        self.label_6 = QtWidgets.QLabel(self.centralwidget)
-        self.label_6.setGeometry(QtCore.QRect(480, 390, 268, 22))
+        self.verticalLayout.addWidget(self.lineEdit_2)
+        self.widget2 = QtWidgets.QWidget(self.centralwidget)
+        self.widget2.setGeometry(QtCore.QRect(390, 180, 271, 71))
+        self.widget2.setObjectName("widget2")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.widget2)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.label_6 = QtWidgets.QLabel(self.widget2)
         font = QtGui.QFont()
         font.setPointSize(11)
         font.setBold(True)
         font.setWeight(75)
         self.label_6.setFont(font)
         self.label_6.setObjectName("label_6")
-        self.lineEdit_3 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_3.setGeometry(QtCore.QRect(480, 420, 421, 31))
+        self.verticalLayout_2.addWidget(self.label_6)
+        self.lineEdit_3 = QtWidgets.QLineEdit(self.widget2)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.lineEdit_3.setFont(font)
         self.lineEdit_3.setReadOnly(True)
         self.lineEdit_3.setObjectName("lineEdit_3")
+        self.verticalLayout_2.addWidget(self.lineEdit_3)
+        self.widget3 = QtWidgets.QWidget(self.centralwidget)
+        self.widget3.setGeometry(QtCore.QRect(40, 270, 394, 267))
+        self.widget3.setObjectName("widget3")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.widget3)
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.label_2 = QtWidgets.QLabel(self.widget3)
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_2.setFont(font)
+        self.label_2.setObjectName("label_2")
+        self.verticalLayout_3.addWidget(self.label_2)
+        self.calendarWidget = QtWidgets.QCalendarWidget(self.widget3)
+        self.calendarWidget.setObjectName("calendarWidget")
+        self.verticalLayout_3.addWidget(self.calendarWidget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1177, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 716, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -191,19 +188,17 @@ class Ui_reserva_gratis(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
         self.pushButton_perfil.setIcon(QtGui.QIcon('Cliente/imagens/perfil.png'))
-        self.label_3.setPixmap(QtGui.QPixmap('Cliente/imagens/logo.png'))
         self.label_5.setPixmap(QtGui.QPixmap('Cliente/imagens/gratis.png'))
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton_sair.setText(_translate("MainWindow", "SAIR"))
         self.pushButton_voltar.setText(_translate("MainWindow", "Voltar"))
-        self.label_2.setText(_translate("MainWindow", "Selecione o dia: "))
-        self.pushButton_confirmar.setText(_translate("MainWindow", "Confirmar reserva "))
+        self.pushButton_sair.setText(_translate("MainWindow", "SAIR"))
+        self.pushButton_confirmar.setText(_translate("MainWindow", "Confirmar"))
         self.label.setText(_translate("MainWindow", "Horário "))
-        self.label_4.setText(_translate("MainWindow", "Guia/Historiador"))
         self.label_6.setText(_translate("MainWindow", "Tipo"))
+        self.label_2.setText(_translate("MainWindow", "Selecione o dia: "))
 
 
 if __name__ == "__main__":

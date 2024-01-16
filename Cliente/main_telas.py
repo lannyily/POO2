@@ -1,18 +1,16 @@
 import sys
-import os
+import json
 import socket
-import threading
 import hashlib
-import mysql.connector as mysql
+import base64
 
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import QMessageBox, QMainWindow, QApplication
-from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QDesktopServices
-from PyQt5.QtCore import Qt, QUrl
-
-from classes import Conta, Ingresso_gratuito, Ingresso_pago
+from PyQt5.QtCore import Qt, QUrl, QDate
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtCore import QByteArray
 
 from py.tela_cadastro import Ui_tela_cadastro
 from py.tela_inicial import Ui_tela_inicial
@@ -22,11 +20,9 @@ from py.tela_casa_polvora import Ui_tela_casa_polvora
 from py.tela_conf_com_senha import Ui_tela_conf_com_senha
 from py.tela_reserva_gratis import Ui_reserva_gratis
 from py.tela_reserva_paga import Ui_reserva_paga
-
-class TelaConfComSenha(QDialog, Ui_tela_conf_com_senha):
-    def __init__(self, parent=None):
-        super(TelaConfComSenha, self).__init__(parent)
-        self.tela_conf_com_senha.setupUi(self)
+from py.tela_hoteis import Ui_hoteis
+from py.tela_restaurantes import Ui_restaurantes
+from py.tela_nota_fical import Ui_tela_nota_fiscal
 
 class Ui_Main(QtWidgets.QWidget):
     """
@@ -63,6 +59,9 @@ class Ui_Main(QtWidgets.QWidget):
         self.stack5 = QtWidgets.QMainWindow()
         self.stack6 = QtWidgets.QMainWindow()
         self.stack7 = QtWidgets.QMainWindow()
+        self.stack8 = QtWidgets.QMainWindow()
+        self.stack9 = QtWidgets.QMainWindow()
+        self.stack10 = QtWidgets.QMainWindow()
         
         self.tela_login = Ui_tela_login()
         self.tela_login.setupUi(self.stack0)
@@ -88,6 +87,15 @@ class Ui_Main(QtWidgets.QWidget):
         self.tela_reserva_paga = Ui_reserva_paga()
         self.tela_reserva_paga.setupUi(self.stack7)
         
+        self.tela_hoteis = Ui_hoteis()
+        self.tela_hoteis.setupUi(self.stack8)
+        
+        self.tela_restaurantes = Ui_restaurantes()
+        self.tela_restaurantes.setupUi(self.stack9)
+        
+        self.tela_nota_fiscal = Ui_tela_nota_fiscal()
+        self.tela_nota_fiscal.setupUi(self.stack10)
+        
         self.QtStack.addWidget(self.stack0)
         self.QtStack.addWidget(self.stack1)
         self.QtStack.addWidget(self.stack2)
@@ -96,6 +104,9 @@ class Ui_Main(QtWidgets.QWidget):
         self.QtStack.addWidget(self.stack5)
         self.QtStack.addWidget(self.stack6)
         self.QtStack.addWidget(self.stack7)
+        self.QtStack.addWidget(self.stack8)
+        self.QtStack.addWidget(self.stack9)
+        self.QtStack.addWidget(self.stack10)
         
 class Main(Ui_Main, QMainWindow):
     """
@@ -166,7 +177,7 @@ class Main(Ui_Main, QMainWindow):
         super(Main, self).__init__(parent)
         self.setupUi(self)
         
-        self.ip = '192.168.18.105'
+        self.ip = '192.168.1.15'
         self.port = 1600
         self.addr = (self.ip, self.port)
         
@@ -188,6 +199,16 @@ class Main(Ui_Main, QMainWindow):
         self.tela_inicial.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_inicial.pushButton_casa_pol.clicked.connect(self.abrir_tela_casa_polvora)
         self.tela_inicial.perfilButton.clicked.connect(self.abrir_tela_perfil)
+        self.tela_inicial.pushButton_hotel.clicked.connect(self.listar_hoteis)
+        self.tela_inicial.pushButton_restaurante.clicked.connect(self.listar_restaurantes)
+        
+        self.tela_hoteis.pushButton_sair.clicked.connect(self.sair_do_sistema)
+        self.tela_hoteis.pushButton_voltat.clicked.connect(self.abrir_tela_inicial)
+        self.tela_hoteis.perfilButton.clicked.connect(self.abrir_tela_perfil)
+        
+        self.tela_restaurantes.pushButton_sair.clicked.connect(self.sair_do_sistema)
+        self.tela_restaurantes.pushButton_voltat.clicked.connect(self.abrir_tela_inicial)
+        self.tela_restaurantes.perfilButton.clicked.connect(self.abrir_tela_perfil)
         
         self.tela_perfil.pushButton_sair.clicked.connect(self.sair_do_sistema)
         self.tela_perfil.pushButton_voltar.clicked.connect(self.abrir_tela_inicial)
@@ -203,9 +224,123 @@ class Main(Ui_Main, QMainWindow):
         self.tela_casa_polvora.pushButton_3.clicked.connect(self.abrir_link_google_maps_casa_polvora)
         self.tela_casa_polvora.pushButton.clicked.connect(self.abrir_tela_reserva_gratis)
         
+        self.tela_reserva_gratis.pushButton_sair.clicked.connect(self.sair_do_sistema)
+        self.tela_reserva_gratis.pushButton_voltar.clicked.connect(self.voltar_tela_reserva_gratis)
+        self.tela_reserva_gratis.pushButton_perfil.clicked.connect(self.abrir_tela_perfil)
+        self.tela_reserva_gratis.pushButton_confirmar.clicked.connect(self.ingresso_gratis)
+        
+        self.tela_nota_fiscal.pushButton.clicked.connect(self.fechar_tela_nota_fiscal)
         
         self.email = ''
+        self.monumento = ''
+        self.nome = ''
+    
+    def nota_fiscal(self): 
+        mensagem = 'notafiscal'
+        self.cliente_socket.send(mensagem.encode())
+        print(f'Enviada mensagem para o servidor: {mensagem}')
 
+      # Receber a resposta JSON
+        resposta_json = self.cliente_socket.recv(4096).decode('utf-8')
+        print(f'Recebida resposta do servidor: {resposta_json}')
+
+       # Converte a resposta JSON de volta para um dicionário
+        resposta_dict = json.loads(resposta_json)
+
+        # Acessa os valores do dicionário usando as chaves
+        idticket = resposta_dict.get('idticket', '')
+        nome_cliente = resposta_dict.get('nome_cliente', '')
+        nome_monumento = resposta_dict.get('nome_monumento', '')
+        data = resposta_dict.get('dia', '')
+        hora = resposta_dict.get('horario', '')
+        valor = resposta_dict.get('tipo_valor', '')
+
+        print(f'idticket: {idticket}, nome_cliente: {nome_cliente}, nome_monumento: {nome_monumento}, data: {data}, hora: {hora}, valor: {valor}')
+
+        # Abrir a tela de nota fiscal
+        self.abrir_tela_nota_fiscal()
+        self.tela_nota_fiscal.lineEdit_nome.setText(nome_cliente)
+        self.tela_nota_fiscal.lineEdit.setText(str(idticket))
+        self.tela_nota_fiscal.lineEdit_tipo.setText(nome_monumento)
+        self.tela_nota_fiscal.lineEdit_data.setText(data)
+        self.tela_nota_fiscal.lineEdit_horario.setText(hora)
+        self.tela_nota_fiscal.lineEdit_valor.setText(valor)
+
+        mensagem = 'qrcode'
+        self.cliente_socket.send(mensagem.encode())
+        print(f'Enviada mensagem para o servidor: {mensagem}')
+    
+        imagem_base64 = self.cliente_socket.recv(16384).decode()
+        print(f'Recebida resposta do servidor: {imagem_base64}')
+        # Decodificar a imagem base64
+        imagem_bytes = base64.b64decode(imagem_base64)
+
+        # Converte a imagem para QPixmap e exibe no QLabel
+        pixmap = QPixmap()
+        pixmap.loadFromData(imagem_bytes)
+        self.tela_nota_fiscal.label_qrcode.setPixmap(pixmap)
+        
+
+    
+    def ingresso_gratis(self):
+        mensagem = f'busca;{self.email}'
+        self.cliente_socket.send(mensagem.encode())
+        print(f'Enviada mensagem para o servidor: {mensagem}')
+        monumento = self.monumento
+        dia = self.tela_reserva_gratis.calendarWidget.selectedDate().toString("dd-MM-yyyy")
+        
+        if dia:
+            mensagem = f'ingresso;{monumento};{dia}'
+            self.cliente_socket.send(mensagem.encode())
+            print(f'Enviada mensagem para o servidor: {mensagem}')
+            
+            resposta = self.cliente_socket.recv(1024).decode()
+            print(f'Resposta recebida: {resposta}')
+        
+            if resposta.lower() == 'sim':
+                self.mostrar_mensagem_sucesso("Ingresso reservado com sucesso!")
+                dia = self.tela_reserva_gratis.calendarWidget.selectedDate().toString("dd-MM-yyyy")
+                self.nota_fiscal()
+            else:
+                self.mostrar_mensagem_erro("Ingresso não reservado!")
+                return None
+        else:
+            self.mostrar_mensagem_erro("Selecione uma data!")
+            return None
+        
+    
+    def listar_restaurantes(self):
+        self.abrir_tela_restaurantes()
+        mensagem = f'listarrestaurantes'
+        self.cliente_socket.send(mensagem.encode())
+        print(f'Enviada mensagem para o servidor: {mensagem}')
+        
+        resposta = self.cliente_socket.recv(1024).decode()
+        resposta = json.loads(resposta)
+        print(f'Recebida resposta do servidor: {resposta}')
+        
+        self.tela_restaurantes.tableWidget.setRowCount(len(resposta))
+        self.tela_restaurantes.tableWidget.setColumnCount(5)
+        for i in range(0, len(resposta)):
+            for j in range(0, 5):
+                self.tela_restaurantes.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(resposta[i][j]))
+    
+    def listar_hoteis(self):
+        self.abrir_tela_hoteis()
+        mensagem = f'listarhoteis'
+        self.cliente_socket.send(mensagem.encode())
+        print(f'Enviada mensagem para o servidor: {mensagem}')
+        
+        resposta = self.cliente_socket.recv(1024).decode()
+        resposta = json.loads(resposta)
+        print(f'Recebida resposta do servidor: {resposta}')
+        
+        self.tela_hoteis.tableWidget.setRowCount(len(resposta))
+        self.tela_hoteis.tableWidget.setColumnCount(4)
+        for i in range(0, len(resposta)):
+            for j in range(0, 4):
+                self.tela_hoteis.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(resposta[i][j]))
+    
     def sair_do_sistema(self):
         msg = f'sair'
         self.cliente_socket.send(msg.encode())
@@ -327,18 +462,13 @@ class Main(Ui_Main, QMainWindow):
                 print(f"Erro: {e}")
         else:
             self.mostrar_mensagem_erro("Preencha todos os campos")
-
-    def calendario(self):
-        print('Data do calendario aterada')
-        data_selecionada = self.tela_casa_polvora_reserva.calendarWidget.selectedDate().toPyDate()
-        print("Data selecionada: ", data_selecionada)
         
     def cancelar_cad(self):
         QMessageBox.information(None, '...', 'Cadastro cancelado!')
         self.QtStack.setCurrentIndex(0)
 
     def excluir_conta(self):
-        senha = self.tela_conf_com_senha.lineEdit_senha.text()
+        senha = self.tela_conf_com_senha.lineEdit.text()
         if senha:
             try:
                 senha_md5 = hashlib.md5(senha.encode()).hexdigest()
@@ -351,14 +481,14 @@ class Main(Ui_Main, QMainWindow):
                 print(f'Resposta recebida: {resp}')
                 
                 if resp.lower() == "conta excluida com sucesso!":
-                    self.tela_conf_com_senha.lineEdit_senha.setText("")
+                    self.tela_conf_com_senha.lineEdit.setText("")
                     print("Conta excluida com sucesso!")
                     QMessageBox.information(None, '...', 'Conta excluida com sucesso!')
                     self.abrir_tela_login()
                     
                 elif resp.lower() == "senha incorreta":
                     self.mostrar_mensagem_erro("Senha incorreta. Tente novamente.")
-                    self.tela_conf_com_senha.lineEdit_senha.setText("")
+                    self.tela_conf_com_senha.lineEdit.setText("")
                 else:
                     self.mostrar_mensagem_erro("Erro ao excluir conta")
                     
@@ -375,6 +505,9 @@ class Main(Ui_Main, QMainWindow):
     
     def mostrar_mensagem_erro(self, mensagem):
         QMessageBox.critical(self, "...", mensagem)
+        
+    def mostrar_mensagem_sucesso(self, mensagem):
+        QMessageBox.information(self, "...", mensagem)
 
     def abrir_tela_login(self):
         self.QtStack.setCurrentIndex(0)
@@ -394,14 +527,29 @@ class Main(Ui_Main, QMainWindow):
         self.QtStack.setCurrentIndex(2)
         
     def abrir_tela_casa_polvora(self):
+        self.monumento = 'CASA DA POLVORA'
+        print(self.monumento)
+        mensagem = 'CASA DA POLVORA'
+        self.cliente_socket.send(mensagem.encode())
         self.QtStack.setCurrentIndex(3)
         
     def abrir_tela_reserva_gratis(self):
-        self.QtStack.setCurrentIndex(4)
-        
-    def abrir_tela_perfil(self):
         try:
-            print('1')
+            mensagem = f'buscahorario;{self.monumento}'
+            self.cliente_socket.send(mensagem.encode())
+            print(f'Enviada mensagem para o servidor: {mensagem}')
+            resposta = self.cliente_socket.recv(1024).decode() 
+            print(f'Recebida resposta do servidor: {resposta}')
+            
+            self.tela_reserva_gratis.lineEdit_2.setText(resposta)
+            self.tela_reserva_gratis.lineEdit_3.setText(self.monumento)
+            self.QtStack.setCurrentIndex(4)
+            
+        except Exception as e:
+            print(f"Erro ao abrir a tela de reserva: {e}")
+        
+    def busca_nome(self):
+        try:
             mensagem = f'busca;{self.email}'            
             self.cliente_socket.send(mensagem.encode())
             print(f'Enviada mensagem para o servidor: {mensagem}')
@@ -411,15 +559,18 @@ class Main(Ui_Main, QMainWindow):
             if ';' in resposta:
                 nome, email = resposta.split(';')
                 print(f'Nome: {nome}, Email: {email}')
-
+                self.nome = nome
                 self.tela_perfil.lineEdit_nome.setText(nome)
                 self.tela_perfil.lineEdit_email.setText(email)
-
-                self.QtStack.setCurrentIndex(5)
+                return nome
             else:
                 print("Resposta do servidor em formato inesperado.")
         except Exception as e:
             print(f"Erro ao abrir a tela de perfil: {e}")
+    
+    def abrir_tela_perfil(self):
+        self.QtStack.setCurrentIndex(5)
+        self.busca_nome()
     
     def abrir_tela_conf_com_senha(self):
         self.stack6.show()
@@ -427,6 +578,23 @@ class Main(Ui_Main, QMainWindow):
     def abrir_tela_reserva_paga(self):
         self.QtStack.setCurrentIndex(7)
         
+    def abrir_tela_hoteis(self):
+        self.QtStack.setCurrentIndex(8)
+        
+    def abrir_tela_restaurantes(self):
+        self.QtStack.setCurrentIndex(9)
+        
+    def abrir_tela_nota_fiscal(self):
+        self.QtStack.setCurrentIndex(10)
+        
+    def fechar_tela_nota_fiscal(self):
+        self.stack10.close()
+        
+    def voltar_tela_reserva_gratis(self):
+        if self.monumento == 'CASA DA POLVORA':
+            self.stack4.close()
+            self.QtStack.setCurrentIndex(3)
+            
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     show_main = Main()

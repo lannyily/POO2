@@ -4,9 +4,15 @@ import mysql.connector as mysql
 import re
 import datetime
 import json
+import random
+from io import BytesIO
+import base64
+import qrcode
+from PIL import Image
+
 
 conexao = mysql.connect(
-    host='localhost', database='turismo', user='root', passwd='amor2004')
+                host='localhost', database='turismo', user='root', passwd='amor2004')
 cursor = conexao.cursor()
 
 class ClienteThread(threading.Thread):
@@ -315,8 +321,97 @@ class ClienteThread(threading.Thread):
                                         print('Operação não reconhecida:', operacao)
                                 else:
                                     print('Erro ao realizar busca')
+                            
+                            elif operacao == 'CASA DA POLVORA':
+                                local = 'CASA DA POLVORA'
+                                operacao_casa_da_polvora = self.csocket.recv(1024).decode('utf-8')
+                                operacao_casa_da_polvora, *dados_casa_da_polvora = operacao_casa_da_polvora.split(';')
+                                dados_casa_da_polvora = ';'.join(dados_casa_da_polvora)
+                                print('Operação dentro de casa da polvora:', operacao_casa_da_polvora)
+                                print('Dados:', dados_casa_da_polvora)
+                                
+                                if operacao_casa_da_polvora == 'sair':
+                                    self.sair()
+                                    break
+                                
+                                if operacao_casa_da_polvora == 'buscahorario':
+                                    local_busca = dados_casa_da_polvora.split(';')[0]
+                                    print(local_busca)
+                                    resposta = self.buscar_horario(local_busca)
+                                    self.csocket.send(resposta.encode())
+                                    print('Horario encontrado')
+                                    while True:
+                                        casa_da_polvora = self.csocket.recv(1024).decode('utf-8')
+                                        casa_da_polvora, *dado_casa_da_polvora = casa_da_polvora.split(';')
+                                        dado_casa_da_polvora = ';'.join(dado_casa_da_polvora)
+                                        print('Operação dentro de casa da polvora ingresso:', casa_da_polvora)
+                                        print('Dados:', dado_casa_da_polvora)
+                                        print('1 Reservando ingresso...')
+                                    
+                                        if casa_da_polvora == 'busca':
+                                            email_busca = dado_casa_da_polvora.split(';')[0]
+                                            print('Email: ', email_busca)
+                                            nome_cliente = self.buscar_nome_por_email(email_busca)
+                                            nome_cliente = str(nome_cliente[0])
+                                            print('Nome: ', nome_cliente)
+                                        
+                                    
+                                        if casa_da_polvora == 'ingresso':
+                                            print('2 Reservando ingresso...')
+                                        
+                                            nome_monumento, data = dado_casa_da_polvora.split(';')
+                                            print('3 Reservando ingresso...')
+                                            horario = self.buscar_horario(local)
+                                            print('horario:', horario)
+                                            print('4 Reservando ingresso...')
+                                            idticket = self.codigo()
+                                            print('5 Reservando ingresso...')
+                                            sucesso = self.criar_ingresso_gratuito(idticket, nome_cliente, nome_monumento, data, horario)
+                                            print('6 Reservando ingresso...')
+                                            print(sucesso)
+                                            if sucesso == True:
+                                                print(f'{nome_cliente} reservou um ingresso!')
+                                                self.csocket.send("sim".encode('utf-8'))
+                                                
+                                                nota_fiscal = self.csocket.recv(1024).decode('utf-8')
+                                                nota_fiscal, *dados_nota_fiscal = nota_fiscal.split(';')
+                                                dados_nota_fiscal = ';'.join(dados_nota_fiscal)
+                                                print('Operação dentro de nota fiscal:', nota_fiscal)
+                                                print('Dados:', dados_nota_fiscal)
+                                                if nota_fiscal == 'notafiscal':
+                                                    nota = self.buscar_ticket(idticket)
+                                                    self.csocket.send(nota.encode('utf-8'))
+                                                    print('Nota fiscal enviada')
+                                                    
+                                                    qr_code = self.csocket.recv(1024).decode('utf-8')
+                                                    qr_code, *dados_qr_code = qr_code.split(';')
+                                                    dados_qr_code = ';'.join(dados_qr_code)
+                                                    print('Operação dentro de qr code:', qr_code)
+                                                    print('Dados:', dados_qr_code)
+                                                    
+                                                    if qr_code == 'qrcode':
+                                                        self.buscar_qrcode(idticket)
+                                                        print('QR code enviado')
+                                                        break
+        
+                                                
+                                                else:
+                                                    print('Operação não reconhecida:', nota_fiscal)
+                                                    break
+                                            break
+                                        else:
+                                            print('Erro ao reservar ingresso')
+                            elif operacao == 'listarhoteis':
+                                self.listar_hoteis_cliente()
+                                print('Listando hoteis...')
+                                break        
+                            elif operacao == 'listarrestaurantes':
+                                self.listar_restaurantes_cliente()
+                                print('Listando restaurantes...')
+                                break
                             else:
                                 print('Operação não reconhecida:', operacao)
+                                break
 
                     else:
                         self.csocket.send("Usuário ou senha incorretos.".encode('utf-8'))
@@ -360,11 +455,212 @@ class ClienteThread(threading.Thread):
                         print('Erro ao criar conta')
                 else:
                     print(f'Operação não reconhecida: {operacao}')
-
+                    break
         except Exception as e:
             print(f"Erro durante a execução da thread: {e}")
         finally:
             self.csocket.close()
+            
+    def buscar_qrcode(self, idticket):
+        try:
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor(dictionary=True)
+
+            print('Buscar imagem do QR code')
+            cursor.execute("SELECT imagem FROM qrcodes WHERE id = %s", (idticket,))
+            resultado = cursor.fetchone()
+
+            if resultado:
+                imagem_bytes = resultado['imagem']
+
+                print('Converter imagem para base64')
+                imagem_base64 = base64.b64encode(imagem_bytes).decode()
+
+                print('Fechar o cursor e a conexão')
+                cursor.close()
+                conexao.close()
+            
+                self.csocket.send(imagem_base64.encode())
+                print('Imagem enviada')
+            else:
+                print('QR code não encontrado para o ID fornecido')
+
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return None  # Ou qualquer valor que faça sentido no seu contexto
+        except Exception as e:
+            print(f"Erro durante a execução da thread: {e}")
+            return None  # Ou qualquer valor que faça sentido no seu contexto
+
+    def buscar_ticket(self, idticket):
+        try:
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor(dictionary=True)
+
+        # Buscar informações do ticket
+            cursor.execute("SELECT * FROM ticket WHERE idticket = %s", (idticket,))
+            resultado_ticket = cursor.fetchone()
+            json_resultado = json.dumps(resultado_ticket)
+        # Fechar o cursor e a conexão
+            cursor.close()
+            conexao.close()
+
+        # Retornar um dicionário contendo as informações do ticket e a imagem em base64
+            return json_resultado
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        except Exception as e:
+            print(f"Erro durante a execução da thread: {e}")
+
+    def buscar_horario(self, monumento):
+        try:
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT horario FROM monumentos WHERE nome = %s", (monumento,))
+            resultado = cursor.fetchone()
+
+            if resultado:
+                horario = resultado[0]  
+                return horario
+            else:
+                print(f"Não foram encontrados horários para o monumento {monumento}")
+                self.csocket.send("Nenhum horário encontrado.".encode())
+
+        except mysql.connector.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        except Exception as e:
+            print(f"Erro durante a execução da thread: {e}")
+        finally:
+            cursor.close()
+            conexao.close()
+    
+    def gerar_idticket(self):
+        return ''.join([str(random.randint(0, 9)) for _ in range(8)])
+
+    def codigo(self):
+        while True:
+            codigo = self.gerar_idticket()
+            if self.codigo_nao_repetido(codigo):
+                return codigo
+
+    def codigo_nao_repetido(self, codigo):
+        try:
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            query = "SELECT COUNT(*) FROM ticket WHERE idticket = %s"
+            cursor.execute(query, (codigo,))
+            resultado = cursor.fetchone()
+            return resultado[0] == 0
+        except mysql.connector.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
+        except Exception as e:
+            print(f"Erro durante a execução da thread: {e}")
+        finally:
+            cursor.close()
+            conexao.close()  
+    
+    def criar_ingresso_pago(self, idticket, nome_cliente, nome_monumento, data, horario, valor):
+        try:
+            conexao = mysql.connect(
+              host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("INSERT INTO ingressos (idticket, nome_cliente, nome_monumento, data, horario, tipo_valor) VALUES (%s, %s, %s, %s, %s, %s)",
+                    (idticket, nome_cliente, nome_monumento, data, horario, valor))
+            conexao.commit()
+            return True
+        except mysql.Error as err:
+            mensagem_erro = f"Erro ao acessar o banco de dados: {err}"
+            print(mensagem_erro)
+            return False
+        except Exception as e:
+            mensagem_erro = f"Erro durante o cadastro: {e}"
+            print(mensagem_erro)
+            return False
+    
+    def criar_ingresso_gratuito(self, idticket, nome_cliente, nome_monumento, data, horario):
+        try:
+            valor = 'Gratuito'
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+
+        # Inserir dados na tabela ticket
+            cursor.execute("INSERT INTO ticket (idticket, nome_cliente, nome_monumento, dia, horario, tipo_valor) VALUES (%s, %s, %s, %s, %s, %s)",
+                           (idticket, nome_cliente, nome_monumento, data, horario, valor))
+            conexao.commit()
+
+        # Criar dados do QR code
+            dados_qrcode = f'{idticket};{nome_cliente};{nome_monumento};{data};{horario};{valor}'
+
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(dados_qrcode)
+            qr.make(fit=True)
+
+        # Criar imagem do QR code
+            img = qr.make_image(fill_color="black", back_color="white")
+
+        # Converter a imagem para bytes
+            buffer = BytesIO()
+            img.save(buffer)
+            imagem_bytes = buffer.getvalue()
+
+        # Inserir dados na tabela qrcodes
+            cursor.execute("INSERT INTO qrcodes (id, imagem) VALUES (%s, %s)", (idticket, imagem_bytes,))
+            conexao.commit()
+
+        # Fechar o cursor e a conexão
+            cursor.close()
+            conexao.close()
+
+            return True
+        except mysql.connector.Error as err:
+            mensagem_erro = f"Erro ao acessar o banco de dados: {err}"
+            print(mensagem_erro)
+            return False
+        except Exception as e:
+            mensagem_erro = f"Erro durante o cadastro: {e}"
+            print(mensagem_erro)
+            return False
+    
+    def listar_restaurantes_cliente(self):
+        try:
+            conexao = mysql.connect(
+                  host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT nome, endereco, estacionamento, refeiçãoLocal, delivery FROM restaurantes")
+            resultado = cursor.fetchall()
+            
+            json_resultado = json.dumps(resultado)
+            self.csocket.send(json_resultado.encode('utf-8'))
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False   
+    
+    def listar_hoteis_cliente(self):
+        try:
+            conexao = mysql.connect(
+                host='localhost', database='turismo', user='root', passwd='amor2004')
+            cursor = conexao.cursor()
+            cursor.execute("SELECT nome, endereco, entacionamento, piscina FROM hoteis")
+            resultado = cursor.fetchall()
+            
+            json_resultado = json.dumps(resultado)
+            self.csocket.send(json_resultado.encode('utf-8'))
+        except mysql.Error as err:
+            print(f"Erro ao acessar o banco de dados: {err}")
+            return False
     
     def excluir_conta(self, email):
         try:

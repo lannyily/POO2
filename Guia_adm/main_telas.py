@@ -101,7 +101,7 @@ class Main(Ui_Main, QMainWindow):
         super(Main, self).__init__(parent)
         self.setupUi(self)
         
-        self.ip = '192.168.18.105'
+        self.ip = '192.168.1.15'
         self.port = 1600
         self.addr = (self.ip, self.port)
         
